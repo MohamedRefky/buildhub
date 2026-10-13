@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import '../../core/localization/app_localization.dart';
 import '../../core/notifications/notification_center.dart';
+import '../../shared/widgets/offline_status.dart';
 import '../../features/home/data/repositories/buildhub_repository.dart';
 import '../../features/vendors/data/repositories/vendors_repository.dart';
 import '../../features/safety/data/repositories/safety_repository.dart';
@@ -58,5 +59,7 @@ class Injection {
         create: (_) => SiteAiAgent()),
     ChangeNotifierProvider<NotificationCenter>(
         create: (_) => NotificationCenter()),
+    ChangeNotifierProvider<OfflineScope>(
+        create: (_) => OfflineScope()),
   ];
 }

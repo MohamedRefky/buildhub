@@ -18,16 +18,25 @@ class OfflineScope extends ChangeNotifier {
   bool get isOffline =>
       simulatedOffline || state == ConnectivityUiState.offlineRoomCached;
 
-  OfflineScope() {
+  /// Constructor stays channel-free so providers can be created in
+  /// widget tests. Call [startMonitoring] after first frame (AppShell).
+  OfflineScope();
+
+  void startMonitoring() {
+    if (_sub != null) return;
     try {
-      _sub = Connectivity().onConnectivityChanged.listen((results) {
-        if (!simulatedOffline) {
-          state = results.contains(ConnectivityResult.none)
-              ? ConnectivityUiState.offlineRoomCached
-              : ConnectivityUiState.onlineSynced;
-          notifyListeners();
-        }
-      });
+      _sub = Connectivity().onConnectivityChanged.listen(
+        (results) {
+          if (!simulatedOffline) {
+            state = results.contains(ConnectivityResult.none)
+                ? ConnectivityUiState.offlineRoomCached
+                : ConnectivityUiState.onlineSynced;
+            notifyListeners();
+          }
+        },
+        onError: (_) {},
+        cancelOnError: false,
+      );
     } catch (_) {}
   }
 

@@ -4,6 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/localization/app_localization.dart';
+import '../../features/siteops/data/services/offline_sync.dart';
+import '../../shared/widgets/offline_status.dart';
 import '../../features/home/presentation/pages/dashboard_page.dart';
 import '../../features/home/presentation/pages/services_page.dart';
 import '../../features/home/presentation/pages/legacy_pages.dart';
@@ -29,6 +31,18 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int tab = 1; // Services, like MainActivity.kt
   void go(int t) => setState(() => tab = t);
+
+  @override
+  void initState() {
+    super.initState();
+    // Platform connectivity streams start after first frame so widget
+    // tests (no platform channels) boot cleanly; errors are swallowed.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<OfflineScope>().startMonitoring();
+      context.read<OfflineSyncManager>().startMonitoring();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +225,7 @@ class _AppShellState extends State<AppShell> {
     }
 
     final isTopLevel = [0, 1, 2, 3, 4].contains(tab);
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -223,9 +238,28 @@ class _AppShellState extends State<AppShell> {
               style: const TextStyle(color: Colors.white))),
         ],
       ),
-      body: body,
+      body: Column(children: [
+        OfflineNoticeBanner(
+          onViewCacheDetails: () => showDialog(
+            context: context,
+            builder: (_) => const OfflineCacheInfoDialog(),
+          ),
+        ),
+        Expanded(child: body),
+      ]),
       bottomNavigationBar: isTopLevel
-          ? NavigationBar(
+          ? Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                      color: scheme.outline.withValues(alpha: 0.5),
+                      width: 0.7),
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16)),
+                child: NavigationBar(
               selectedIndex: _navIndex(tab),
               onDestinationSelected: (i) => go([0, 1, 22, 27, 9][i]),
               destinations: [
@@ -240,6 +274,8 @@ class _AppShellState extends State<AppShell> {
                 NavigationDestination(icon: const Icon(Icons.smart_toy),
                   label: loc.t('nav.copilot')),
               ],
+                ),
+              ),
             )
           : null,
     );

@@ -30,16 +30,15 @@ android {
     }
 
     buildTypes {
+        debug {
+            ndk {
+                abiFilters.add("x86_64")
+            }
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
-        }
-    }
-
-    packaging {
-        jniLibs {
-            keepDebugSymbols += "**/*.so"
         }
     }
 }

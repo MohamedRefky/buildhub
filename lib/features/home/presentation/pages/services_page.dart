@@ -56,17 +56,38 @@ class AllServicesScreen extends StatelessWidget {
       itemCount: allServices.length,
       itemBuilder: (_, i) {
         final s = allServices[i];
+        final scheme = Theme.of(context).colorScheme;
         return Card(
           child: InkWell(
+            borderRadius: BorderRadius.circular(14),
             onTap: () => onSelect(s.targetTab),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(s.icon, size: 28),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: scheme.primary.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: scheme.primary.withValues(alpha: 0.35)),
+                  ),
+                  child: Icon(s.icon,
+                      size: 26, color: scheme.primary),
+                ),
                 const SizedBox(height: 8),
-                Text(loc.t(s.titleKey),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelSmall),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(loc.t(s.titleKey),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                ),
               ],
             ),
           ),

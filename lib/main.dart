@@ -20,6 +20,7 @@ import 'features/ai/data/services/walkie_talkie.dart';
 import 'features/siteops/data/services/offline_sync.dart';
 import 'features/siteops/data/services/site_agents.dart';
 import 'core/notifications/notification_center.dart';
+import 'shared/widgets/offline_status.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,6 +80,8 @@ class _BuildHubAppState extends State<BuildHubApp> {
             create: (_) => SiteAiAgent()),
         ChangeNotifierProvider<NotificationCenter>(
             create: (_) => NotificationCenter()),
+        ChangeNotifierProvider<OfflineScope>(
+            create: (_) => OfflineScope()),
       ],
       builder: (context, _) {
         final loc = context.watch<AppLocalization>();
@@ -92,7 +95,7 @@ class _BuildHubAppState extends State<BuildHubApp> {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          theme: AppTheme.darkIndustrial(),
+          theme: AppTheme.sunlight(),
           darkTheme: AppTheme.darkIndustrial(),
           themeMode: sunlightMode ? ThemeMode.light : ThemeMode.dark,
           builder: (context, child) => Directionality(

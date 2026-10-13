@@ -19,26 +19,57 @@ class DashboardScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(loc.tr(p.nameAr, p.nameEn),
-                    style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 4),
-                Text('${p.code} • ${loc.tr(p.locationAr, p.locationEn)}'),
-                const SizedBox(height: 12),
-                LinearProgressIndicator(value: p.completionPercent / 100),
-                const SizedBox(height: 8),
-                Text('${loc.t('dash.progress')}: ${p.completionPercent}% • ${loc.t('dash.remaining')}: ${p.daysRemaining} ${loc.t('dash.days')}'),
-                const SizedBox(height: 8),
-                Text('${loc.t('dash.budget')}: ${loc.formatAed(p.budgetAed)}'),
-                Text('${loc.t('dash.spent')}: ${loc.formatAed(p.spentAed)}'),
-                Text('${loc.t('dash.left')}: ${loc.formatAed(remaining)}'),
-                Text('CPI ${p.cpi} • SPI ${p.spi}'),
-              ],
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.55),
+                width: 1.4),
+          ),
+          child: Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    Expanded(
+                        child: Text(loc.tr(p.nameAr, p.nameEn),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge)),
+                    Chip(
+                        label: Text('${p.completionPercent}%'),
+                        visualDensity: VisualDensity.compact),
+                  ]),
+                  const SizedBox(height: 4),
+                  Text('${p.code} • ${loc.tr(p.locationAr, p.locationEn)}'),
+                  const SizedBox(height: 12),
+                  LinearProgressIndicator(
+                      value: p.completionPercent / 100,
+                      minHeight: 8,
+                      borderRadius: BorderRadius.circular(6)),
+                  const SizedBox(height: 8),
+                  Text('${loc.t('dash.progress')}: ${p.completionPercent}% • ${loc.t('dash.remaining')}: ${p.daysRemaining} ${loc.t('dash.days')}'),
+                  const SizedBox(height: 8),
+                  Text('${loc.t('dash.budget')}: ${loc.formatAed(p.budgetAed)}'),
+                  Text('${loc.t('dash.spent')}: ${loc.formatAed(p.spentAed)}'),
+                  Text('${loc.t('dash.left')}: ${loc.formatAed(remaining)}'),
+                  const SizedBox(height: 6),
+                  Wrap(spacing: 6, children: [
+                    Chip(
+                        label: Text('CPI ${p.cpi}'),
+                        visualDensity: VisualDensity.compact),
+                    Chip(
+                        label: Text('SPI ${p.spi}'),
+                        visualDensity: VisualDensity.compact),
+                  ]),
+                ],
+              ),
             ),
           ),
         ),

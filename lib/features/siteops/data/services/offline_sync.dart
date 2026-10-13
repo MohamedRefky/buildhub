@@ -26,12 +26,21 @@ class OfflineSyncManager extends ChangeNotifier {
 
   int get pendingSyncCount => _queue.length;
 
-  OfflineSyncManager() {
+  /// Constructor stays channel-free (test-safe). Call [startMonitoring]
+  /// after first frame (AppShell) for live connectivity tracking.
+  OfflineSyncManager();
+
+  void startMonitoring() {
+    if (_connectivitySub != null) return;
     try {
       _connectivitySub = Connectivity()
           .onConnectivityChanged
-          .listen((results) => setNetworkStatus(
-              !results.contains(ConnectivityResult.none)));
+          .listen(
+            (results) => setNetworkStatus(
+                !results.contains(ConnectivityResult.none)),
+            onError: (_) {},
+            cancelOnError: false,
+          );
     } catch (_) {}
   }
 
