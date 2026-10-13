@@ -1,0 +1,256 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // HELPERS
+    // =========================================================================
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // The owner field can never change after creation.
+    function ownerUnchanged() { return incoming().userId == existing().userId; }
+
+    // ADMIN
+    // Preferred: set the custom claim { admin: true } from a trusted backend:
+    //   admin.auth().setCustomUserClaims(uid, { admin: true })
+    // TRANSITIONAL fallback: your verified Google account. Remove the second
+    // branch once the claim is set, so no email is hardcoded in the rules.
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.get('admin', false) == true ||
+        (
+          request.auth.token.get('email_verified', false) == true &&
+          request.auth.token.get('email', '') == 'abdelfattahibrahimnoaaman@gmail.com'
+        )
+      );
+    }
+
+    // REVIEWER: admins, plus users holding a reviewer role/claim set by a backend.
+    function isReviewer() {
+      return isAdmin() || (
+        isSignedIn() && (
+          request.auth.token.get('role', '') in ['ADMIN', 'REVIEWER', 'COMPLIANCE_REVIEWER', 'PROCUREMENT_MANAGER'] ||
+          request.auth.token.get('reviewer', false) == true
+        )
+      );
+    }
+
+    // Same non-empty companyId on the document and on the caller's token.
+    function sameCompany() {
+      return isSignedIn() &&
+             existing().get('companyId', '') != '' &&
+             existing().get('companyId', '') == request.auth.token.get('companyId', '');
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // =========================================================================
+    // SCHEMA VALIDATORS (shape only; ownership is checked in each rule below)
+    // =========================================================================
+    function isValidSiteUpdate(data) {
+      return data.userId is string &&
+             data.zone is string &&
+             data.activity is string &&
+             data.progressText is string &&
+             data.manpower is int &&
+             data.equipment is string &&
+             data.status is string &&
+             data.submittedBy is string &&
+             data.timestamp is timestamp && data.timestamp <= request.time;
+    }
+
+    function isValidBlocker(data) {
+      return data.userId is string &&
+             data.title is string &&
+             data.titleAr is string &&
+             data.zone is string &&
+             data.activity is string &&
+             data.priority is string &&
+             data.status is string;
+    }
+
+    function isValidWorkfront(data) {
+      return data.userId is string &&
+             data.zone is string &&
+             data.activity is string &&
+             data.status is string;
+    }
+
+    function isValidCommitment(data) {
+      return data.userId is string &&
+             data.title is string &&
+             data.responsibleParty is string &&
+             data.status is string;
+    }
+
+    // =========================================================================
+    // DEFAULT DENY
+    // Anything not matched below is blocked. NOTE: top-level /projects, /records,
+    // /procurement_requests, /walkie_talkie_logs, /snags and /safety_tickets are
+    // intentionally NOT opened here. The app currently writes them with fixed IDs
+    // (e.g. "proj-01") that would collide across users. Move them under
+    // /users/{uid}/... (already covered by the users rule below).
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // SITEPULSE COLLECTIONS: owner-only, owner field immutable
+    // =========================================================================
+    match /site_updates/{updateId} {
+      allow read: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(updateId) &&
+                       incoming().userId == request.auth.uid && isValidSiteUpdate(incoming());
+      allow update: if (isOwner(existing().userId) || isAdmin()) &&
+                       ownerUnchanged() && isValidSiteUpdate(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /blockers/{blockerId} {
+      allow read: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(blockerId) &&
+                       incoming().userId == request.auth.uid && isValidBlocker(incoming());
+      allow update: if (isOwner(existing().userId) || isAdmin()) &&
+                       ownerUnchanged() && isValidBlocker(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /workfronts/{wfId} {
+      allow read: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(wfId) &&
+                       incoming().userId == request.auth.uid && isValidWorkfront(incoming());
+      allow update: if (isOwner(existing().userId) || isAdmin()) &&
+                       ownerUnchanged() && isValidWorkfront(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /commitments/{comId} {
+      allow read: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(comId) &&
+                       incoming().userId == request.auth.uid && isValidCommitment(incoming());
+      allow update: if (isOwner(existing().userId) || isAdmin()) &&
+                       ownerUnchanged() && isValidCommitment(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // USERS: private tenant space. Put all per-user app data under here
+    // (projects, records, procurement, snags, safety tickets, walkie logs, ...)
+    // =========================================================================
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      match /{allSubcollections=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // =========================================================================
+    // USER FILE INDEX
+    // FIX: the old rule let anyone update another user's doc by setting
+    // userId to themselves. Ownership is now checked on the EXISTING doc.
+    // =========================================================================
+    match /user_files/{fileId} {
+      allow read: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(fileId) &&
+                       incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() && existing().userId == request.auth.uid &&
+                       ownerUnchanged();
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+    }
+
+    // =========================================================================
+    // GOVERNANCE
+    // FIX: owners could previously update any approval record by claiming
+    // ownership. Now: owners submit, only reviewers decide.
+    // (Assumes a `status` field starting at 'SUBMITTED'; adjust if yours differs.)
+    // =========================================================================
+    match /approval_records/{approvalId} {
+      allow read: if isSignedIn() && (
+        existing().userId == request.auth.uid || sameCompany() || isReviewer()
+      );
+      allow create: if isSignedIn() && isValidId(approvalId) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().get('status', 'SUBMITTED') == 'SUBMITTED';
+      allow update: if isReviewer() && ownerUnchanged();
+      allow delete: if isAdmin();
+    }
+
+    // Audit log: append-only for users, changes by admin only.
+    match /exception_overrides/{overrideId} {
+      allow read: if isSignedIn() && (
+        existing().userId == request.auth.uid || sameCompany() || isReviewer()
+      );
+      allow create: if isSignedIn() && isValidId(overrideId) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().who is string &&
+                       incoming().what is string &&
+                       incoming().why is string &&
+                       incoming().authority is string &&
+                       incoming().durationHours is int;
+      allow update, delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // VENDORS
+    // =========================================================================
+
+    // FIX: any signed-in user could create or overwrite verified vendors.
+    // Verified status is only meaningful if a reviewer grants it.
+    match /verified_vendors/{vendorId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isReviewer();
+    }
+
+    // Legacy collection.
+    match /approved_vendors/{vendorId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(vendorId) &&
+                       incoming().userId == request.auth.uid;
+      allow update: if (isOwner(existing().userId) && ownerUnchanged()) || isAdmin();
+      allow delete: if isOwner(existing().userId) || isAdmin();
+    }
+
+    // Role-gated verification status and badge (logic unchanged from your version).
+    match /vendors/{vendorId} {
+      allow read: if isSignedIn();
+
+      allow create: if isSignedIn() && (
+        isReviewer() ||
+        (
+          incoming().userId == request.auth.uid &&
+          (!('verificationStatus' in incoming()) || incoming().verificationStatus == 'Draft') &&
+          (!('status' in incoming()) || incoming().status == 'Draft') &&
+          (!('isVerified' in incoming()) || incoming().isVerified == false) &&
+          (!('isVerifiedBadge' in incoming()) || incoming().isVerifiedBadge == false) &&
+          (!('reviewerNotes' in incoming()) || incoming().reviewerNotes == '') &&
+          (!('reviewerUid' in incoming()) || incoming().reviewerUid == '') &&
+          (!('reviewerName' in incoming()) || incoming().reviewerName == '')
+        )
+      );
+
+      allow update: if isSignedIn() && (
+        isReviewer() ||
+        (
+          isOwner(existing().userId) &&
+          incoming().userId == existing().userId &&
+          (!('isVerified' in incoming()) || incoming().isVerified == existing().isVerified) &&
+          (!('isVerifiedBadge' in incoming()) || incoming().isVerifiedBadge == existing().isVerifiedBadge) &&
+          (!('verificationStatus' in incoming()) || incoming().verificationStatus == existing().verificationStatus) &&
+          (!('status' in incoming()) || incoming().status == existing().status) &&
+          (!('reviewerNotes' in incoming()) || incoming().reviewerNotes == existing().reviewerNotes) &&
+          (!('reviewerUid' in incoming()) || incoming().reviewerUid == existing().reviewerUid) &&
+          (!('reviewerName' in incoming()) || incoming().reviewerName == existing().reviewerName) &&
+          (!('verifiedAt' in incoming()) || incoming().verifiedAt == existing().verifiedAt)
+        )
+      );
+
+      allow delete: if isAdmin() || (isSignedIn() && isOwner(existing().userId));
+    }
+  }
+}

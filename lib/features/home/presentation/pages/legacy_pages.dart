@@ -15,20 +15,6 @@ class BuildNetScreen extends StatelessWidget {
   }
 }
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    final loc = context.watch<AppLocalization>();
-    final repo = context.watch<BuildHubRepository>();
-    if (repo.siteLogs.isEmpty) {
-      return Center(child: Text(loc.t('ord.empty')));
-    }
-    return ListView(children: repo.siteLogs.map((l) =>
-      ListTile(title: Text(loc.tr(l.summaryAr, l.summaryEn)), subtitle: Text(l.dateStr))).toList());
-  }
-}
-
 class AccountScreen extends StatelessWidget {
   final VoidCallback onToggleLanguage;
   final VoidCallback onToggleSunlight;

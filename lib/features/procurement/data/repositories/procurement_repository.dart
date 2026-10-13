@@ -31,4 +31,9 @@ class ProcurementRepository extends ChangeNotifier {
     quotations.add(q);
     notifyListeners();
   }
+
+  void deleteOrder(String id) {
+    orders.removeWhere((e) => e.id == id);
+    notifyListeners();
+  }
 }

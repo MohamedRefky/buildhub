@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 1. User-specific private file storage:
+    // Files are uploaded under users/{userId}/...
+    // Strict security rule: Only the authenticated owner can read, write, or delete their own files.
+    match /users/{userId}/{allPaths=**} {
+      allow read, write, delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // 2. Public shared UAE construction templates & specifications
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+  }
+}

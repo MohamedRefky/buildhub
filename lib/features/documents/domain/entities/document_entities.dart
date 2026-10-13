@@ -53,3 +53,43 @@ class RfiEntity {
     required this.titleAr, required this.titleEn, this.status = 'OPEN',
   });
 }
+
+class TransmittalRecord {
+  final String transmittalNo;
+  final String subject;
+  final String sender;
+  final String recipient;
+  final String dateSent;
+  final String acknowledgmentStatus;
+  const TransmittalRecord({
+    required this.transmittalNo, required this.subject,
+    required this.sender, required this.recipient,
+    required this.dateSent, this.acknowledgmentStatus = 'PENDING',
+  });
+}
+
+class CorrespondenceNotice {
+  final String noticeId;
+  final String clauseReference;
+  final String subject;
+  final String deadlineDate;
+  final int daysRemaining;
+  final String status;
+  const CorrespondenceNotice({
+    required this.noticeId, required this.clauseReference,
+    required this.subject, required this.deadlineDate,
+    required this.daysRemaining, this.status = 'ACTIVE',
+  });
+}
+
+class AuditLogEntry {
+  final String auditId;
+  final String userEmail;
+  final String action;
+  final String targetRecord;
+  final String timestamp;
+  const AuditLogEntry({
+    required this.auditId, required this.userEmail, required this.action,
+    required this.targetRecord, required this.timestamp,
+  });
+}

@@ -170,14 +170,24 @@ class FidicClaim {
 
 class DailySiteLog {
   final String id;
+  final String projectId;
   final String dateStr;
+  final String timestamp;
   final String summaryAr;
   final String summaryEn;
+  final String note;
+  final String category;
+  final String author;
+  final String photoUri;
+  final String weatherSnapshot;
   final int manpower;
   final int equipmentCount;
   const DailySiteLog({
-    required this.id, required this.dateStr,
+    required this.id, this.projectId = '', required this.dateStr,
+    this.timestamp = '',
     required this.summaryAr, required this.summaryEn,
+    this.note = '', this.category = 'GENERAL', this.author = '',
+    this.photoUri = '', this.weatherSnapshot = '',
     required this.manpower, required this.equipmentCount,
   });
 }

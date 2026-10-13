@@ -34,10 +34,14 @@ class RiskItem {
   final String titleEn;
   final int probability; // 1-5
   final int impact; // 1-5
+  final String mitigationAr;
+  final String mitigationEn;
+  final String owner;
   int get score => probability * impact;
   const RiskItem({
     required this.id, required this.titleAr, required this.titleEn,
     required this.probability, required this.impact,
+    this.mitigationAr = '', this.mitigationEn = '', this.owner = '',
   });
 }
 

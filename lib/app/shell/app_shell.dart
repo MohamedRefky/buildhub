@@ -45,10 +45,10 @@ class _AppShellState extends State<AppShell> {
         title = loc.t('screen.services');
       case 2:
         body = const BuildNetHubScreen();
-        title = loc.t('nav.commercial');
+        title = loc.t('bn.hub');
       case 3:
-        body = const OrdersScreen();
-        title = loc.t('nav.docs');
+        body = const OrdersProcurementScreen();
+        title = loc.t('screen.orders');
       case 4:
         body = const AiCopilotFullScreen();
         title = loc.t('nav.copilot');
@@ -151,6 +151,9 @@ class _AppShellState extends State<AppShell> {
       case 41:
         body = const OfflineSyncScreen();
         title = loc.t('screen.offline');
+      case 42:
+        body = const AiSuperintendentScreen();
+        title = loc.t('screen.super');
       case 43:
         body = const AutonomousAgentScreen();
         title = loc.t('screen.agent');
@@ -164,8 +167,8 @@ class _AppShellState extends State<AppShell> {
         body = const ProgressCameraScreen();
         title = loc.t('screen.camera');
       case 47:
-        body = const AiSuperintendentScreen();
-        title = loc.t('screen.super');
+        body = const OrionTacticalCopilotScreen();
+        title = loc.t('screen.tactical');
       case 48:
         body = const RiskHeatMapFullScreen();
         title = loc.t('screen.risk');
@@ -175,6 +178,9 @@ class _AppShellState extends State<AppShell> {
       case 50:
         body = const SitePulseScreen();
         title = loc.t('screen.command');
+      case 51:
+        body = const PetroleumSpecsScreen();
+        title = loc.t('specs.hub_title');
       case 52:
         body = const PettyCashFullScreen();
         title = loc.t('screen.pettycash');
@@ -196,6 +202,9 @@ class _AppShellState extends State<AppShell> {
       case 58:
         body = const ApprovedVendorManagementScreen();
         title = loc.t('screen.vendors');
+      case 59:
+        body = const VendorVerificationScreen();
+        title = loc.t('ven.verify');
       default:
         body = GenericServiceScreen(tabId: tab, onBack: () => go(1));
         title = loc.t('common.service');
@@ -217,8 +226,8 @@ class _AppShellState extends State<AppShell> {
       body: body,
       bottomNavigationBar: isTopLevel
           ? NavigationBar(
-              selectedIndex: tab > 4 ? 1 : tab,
-              onDestinationSelected: (i) => go(i),
+              selectedIndex: _navIndex(tab),
+              onDestinationSelected: (i) => go([0, 1, 22, 27, 9][i]),
               destinations: [
                 NavigationDestination(icon: const Icon(Icons.dashboard),
                   label: loc.t('nav.home')),
@@ -234,5 +243,20 @@ class _AppShellState extends State<AppShell> {
             )
           : null,
     );
+  }
+
+  /// BottomNav highlight mapping — mirrors MainActivity.kt isSelected rules:
+  /// Services lights for site tabs, Commercial for trade tabs,
+  /// Documents for docs tabs, Copilot for AI tabs.
+  int _navIndex(int t) {
+    if (t == 0) return 0;
+    if ({1, 6, 14, 26, 28, 34, 35, 38, 41, 42, 43, 44, 46, 50, 51}
+        .contains(t)) {
+      return 1;
+    }
+    if ({3, 5, 7, 22, 25}.contains(t)) return 2;
+    if ({12, 23, 27, 29, 32, 33, 37}.contains(t)) return 3;
+    if ({9, 21, 36}.contains(t)) return 4;
+    return 1;
   }
 }

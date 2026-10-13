@@ -12,6 +12,14 @@ import 'features/procurement/data/repositories/procurement_repository.dart';
 import 'features/safety/data/repositories/safety_repository.dart';
 import 'features/sitepulse/data/repositories/sitepulse_repository.dart';
 import 'features/vendors/data/repositories/vendors_repository.dart';
+import 'features/planning/data/repositories/baseline_repository.dart';
+import 'features/documents/data/repositories/sync_repository.dart';
+import 'features/documents/data/services/auth_manager.dart';
+import 'features/ai/data/services/voice_input.dart';
+import 'features/ai/data/services/walkie_talkie.dart';
+import 'features/siteops/data/services/offline_sync.dart';
+import 'features/siteops/data/services/site_agents.dart';
+import 'core/notifications/notification_center.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +59,26 @@ class _BuildHubAppState extends State<BuildHubApp> {
             create: (_) => FinanceRepository()),
         ChangeNotifierProvider<SitePulseRepository>(
             create: (_) => SitePulseRepository()),
+        ChangeNotifierProvider<BaselineRepository>(
+            create: (_) => BaselineRepository()),
+        ChangeNotifierProvider<DailyReportSyncRepository>(
+            create: (_) => DailyReportSyncRepository()),
+        ChangeNotifierProvider<RecordSyncRepository>(
+            create: (_) => RecordSyncRepository()),
+        ChangeNotifierProvider<AuthManager>(
+            create: (_) => AuthManager()),
+        ChangeNotifierProvider<VoiceInputManager>(
+            create: (_) => VoiceInputManager()),
+        ChangeNotifierProvider<WalkieTalkieAudioService>(
+            create: (_) => WalkieTalkieAudioService()),
+        ChangeNotifierProvider<OfflineSyncManager>(
+            create: (_) => OfflineSyncManager()),
+        ChangeNotifierProvider<AutonomousInputAgent>(
+            create: (_) => AutonomousInputAgent()),
+        ChangeNotifierProvider<SiteAiAgent>(
+            create: (_) => SiteAiAgent()),
+        ChangeNotifierProvider<NotificationCenter>(
+            create: (_) => NotificationCenter()),
       ],
       builder: (context, _) {
         final loc = context.watch<AppLocalization>();

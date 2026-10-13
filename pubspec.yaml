@@ -32,6 +32,16 @@ dependencies:
   # Utils
   uuid: ^4.5.1
   fl_chart: ^0.69.0
+  crypto: ^3.0.6
+  http: ^1.2.2
+  # Voice PTT (mirrors VoiceInputManager + WalkieTalkieAudioService)
+  speech_to_text: ^7.0.0
+  record: ^6.0.0
+  path_provider: ^2.1.4
+  # Auth (mirrors FirebaseAuthManager Google Sign-In)
+  google_sign_in: ^6.2.1
+  # Connectivity (mirrors OfflineStatusIndicator NetworkCallback)
+  connectivity_plus: ^6.1.0
 
 dev_dependencies:
   flutter_test:

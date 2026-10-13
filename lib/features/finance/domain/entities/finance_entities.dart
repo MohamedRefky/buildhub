@@ -54,3 +54,17 @@ class BusinessPlanEntity {
     required this.npvAed, required this.paybackMonths,
   });
 }
+
+class ExecutiveAnalyticsSummary {
+  final double plannedValueAed;
+  final double earnedValueAed;
+  final double actualCostAed;
+  final double spi;
+  final double cpi;
+  final String safetyLeadingIndicators;
+  const ExecutiveAnalyticsSummary({
+    required this.plannedValueAed, required this.earnedValueAed,
+    required this.actualCostAed, required this.spi, required this.cpi,
+    this.safetyLeadingIndicators = '',
+  });
+}
