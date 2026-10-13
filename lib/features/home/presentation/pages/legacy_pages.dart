@@ -134,12 +134,14 @@ class GenericServiceScreen extends StatelessWidget {
   const GenericServiceScreen({super.key, required this.tabId, this.serviceId, required this.onBack});
 
   String _resolveTitle(AppLocalization loc) {
-    try {
-      final def = allServices.firstWhere((s) => s.targetTab == tabId);
-      return loc.t(def.titleKey);
-    } catch (_) {
-      return '${loc.t('common.service')} #$tabId';
+    for (final cat in allServiceCategories) {
+      for (final s in cat.items) {
+        if (s.targetTab == tabId) {
+          return loc.isArabic ? s.titleAr : s.titleEn;
+        }
+      }
     }
+    return '${loc.t('common.service')} #$tabId';
   }
 
   @override

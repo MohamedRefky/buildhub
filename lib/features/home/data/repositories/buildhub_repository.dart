@@ -7,7 +7,41 @@ import '../../domain/entities/home_entities.dart';
 class BuildHubRepository extends ChangeNotifier {
   Project currentProject = Project.demo();
 
-  final List<Project> projects = [Project.demo()];
+  final List<Project> projects = [
+    Project.demo(),
+    const Project(
+      id: 'proj-02',
+      nameAr: 'خور دبي - البرج السكني C',
+      nameEn: 'Dubai Creek Harbour - Tower C',
+      code: 'DCH-TWR-02',
+      clientAr: 'إعمار العقارية',
+      clientEn: 'Emaar Properties',
+      locationAr: 'ميناء خور دبي، دبي',
+      locationEn: 'Dubai Creek Harbour, Dubai',
+      budgetAed: 320000000,
+      spentAed: 144000000,
+      completionPercent: 45,
+      daysRemaining: 310,
+      cpi: 1.01,
+      spi: 0.95,
+    ),
+    const Project(
+      id: 'proj-03',
+      nameAr: 'قطار الاتحاد - مستودع الحزمة ب',
+      nameEn: 'Etihad Rail - Depot Package B',
+      code: 'ETR-PKG-02',
+      clientAr: 'شركة الاتحاد للقطارات',
+      clientEn: 'Etihad Rail DB',
+      locationAr: 'الفقع، أبوظبي / دبي',
+      locationEn: 'Al Faqa, Abu Dhabi / Dubai',
+      budgetAed: 610000000,
+      spentAed: 490000000,
+      completionPercent: 80,
+      daysRemaining: 120,
+      cpi: 1.05,
+      spi: 1.02,
+    ),
+  ];
   final List<AlertItem> alerts = [
     const AlertItem(
       id: 'a1',
@@ -51,5 +85,11 @@ class BuildHubRepository extends ChangeNotifier {
       currentProject = found.first;
       notifyListeners();
     }
+  }
+
+  void addProject(Project project) {
+    projects.add(project);
+    currentProject = project;
+    notifyListeners();
   }
 }
