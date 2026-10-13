@@ -5,26 +5,55 @@
 // record transitions. In-memory now; cloud_firestore push wiring later
 // (see FirestorePaths for the exact collections).
 import 'package:flutter/material.dart';
+import 'package:buildhub/core/database/app_database.dart';
+import 'package:buildhub/core/database/daos/sync_dao.dart';
 import '../../domain/entities/sync_entities.dart';
 import '../../domain/repositories/offline_first_repository.dart';
 import '../../domain/workflow/record_workflow.dart';
+import '../mappers/sync_mappers.dart';
 
 class DailyReportSyncRepository extends ChangeNotifier {
   final List<DailyReportEntity> _reports = [];
+  SyncDao? _dao;
+  bool _hydrated = false;
 
-  List<DailyReportEntity> forProject(String projectId) =>
-      _reports.where((r) => r.projectId == projectId).toList();
+  /// First read hydrates the in-memory cache from sqflite in the
+  /// background; readers stay synchronous so existing callers are safe.
+  Future<void> _ensureHydrated() async {
+    if (_hydrated) return;
+    _hydrated = true;
+    try {
+      final dao = await AppDatabase.instance.syncDao();
+      _dao = dao;
+      final rows = await dao.all('daily_reports');
+      final ids = _reports.map((r) => r.id).toSet();
+      for (final row in rows) {
+        final entity = SyncMappers.reportFromRow(row);
+        if (!ids.contains(entity.id)) _reports.add(entity);
+      }
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  List<DailyReportEntity> forProject(String projectId) {
+    _ensureHydrated();
+    return _reports.where((r) => r.projectId == projectId).toList();
+  }
 
   DailyReportEntity? byId(String id) {
+    _ensureHydrated();
     for (final r in _reports) {
       if (r.id == id) return r;
     }
     return null;
   }
 
-  int pendingCount(String projectId) => forProject(projectId)
-      .where((r) => r.syncState == SyncState.pending)
-      .length;
+  int pendingCount(String projectId) {
+    _ensureHydrated();
+    return forProject(projectId)
+        .where((r) => r.syncState == SyncState.pending)
+        .length;
+  }
 
   /// Saves locally as PENDING with nextVersion, then attempts push.
   /// Mirrors the reference: conflict → CONFLICT, IO → stays PENDING.
@@ -41,8 +70,17 @@ class DailyReportSyncRepository extends ChangeNotifier {
       _reports[_reports.indexOf(existing)] = next;
     }
     notifyListeners();
+    await _persist(next);
     await pushReport(next);
     return byId(next.id) ?? next;
+  }
+
+  Future<void> _persist(DailyReportEntity report) async {
+    try {
+      await _ensureHydrated();
+      await _dao?.upsert(
+          'daily_reports', SyncMappers.reportToRow(report));
+    } catch (_) {}
   }
 
   Future<void> pushReport(DailyReportEntity report) async {
@@ -71,32 +109,57 @@ class DailyReportSyncRepository extends ChangeNotifier {
     final i = _reports.indexWhere((r) => r.id == report.id);
     if (i != -1) _reports[i] = report;
     notifyListeners();
+    _persist(report);
   }
 }
 
 class RecordSyncRepository extends ChangeNotifier {
   final WorkflowEngine workflowEngine;
   final List<RecordEntity> _records = [];
+  SyncDao? _dao;
+  bool _hydrated = false;
 
   RecordSyncRepository({WorkflowEngine? workflowEngine})
       : workflowEngine = workflowEngine ?? WorkflowEngine();
 
-  List<RecordEntity> forProject(String projectId) =>
-      _records.where((r) => r.projectId == projectId).toList();
+  Future<void> _ensureHydrated() async {
+    if (_hydrated) return;
+    _hydrated = true;
+    try {
+      final dao = await AppDatabase.instance.syncDao();
+      _dao = dao;
+      final rows = await dao.all('records');
+      final ids = _records.map((r) => r.id).toSet();
+      for (final row in rows) {
+        final entity = SyncMappers.recordFromRow(row);
+        if (!ids.contains(entity.id)) _records.add(entity);
+      }
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  List<RecordEntity> forProject(String projectId) {
+    _ensureHydrated();
+    return _records.where((r) => r.projectId == projectId).toList();
+  }
 
   List<RecordEntity> byType(String projectId, String type) =>
       forProject(projectId).where((r) => r.type == type).toList();
 
   RecordEntity? byId(String id) {
+    _ensureHydrated();
     for (final r in _records) {
       if (r.id == id) return r;
     }
     return null;
   }
 
-  int pendingCount(String projectId) => forProject(projectId)
-      .where((r) => r.syncState == SyncState.pending)
-      .length;
+  int pendingCount(String projectId) {
+    _ensureHydrated();
+    return forProject(projectId)
+        .where((r) => r.syncState == SyncState.pending)
+        .length;
+  }
 
   Future<RecordEntity> saveRecord(RecordEntity record) async {
     final existing = byId(record.id);
@@ -111,9 +174,17 @@ class RecordSyncRepository extends ChangeNotifier {
       _records[_records.indexOf(existing)] = next;
     }
     notifyListeners();
+    await _persist(next);
     // TODO: push to FirestorePaths.typedRecord with version check.
     _replace(next.copyWith(syncState: SyncState.synced));
     return byId(next.id) ?? next;
+  }
+
+  Future<void> _persist(RecordEntity record) async {
+    try {
+      await _ensureHydrated();
+      await _dao?.upsert('records', SyncMappers.recordToRow(record));
+    } catch (_) {}
   }
 
   Future<MoveResult> transitionRecord(
@@ -168,6 +239,7 @@ class RecordSyncRepository extends ChangeNotifier {
     final i = _records.indexWhere((r) => r.id == record.id);
     if (i != -1) _records[i] = record;
     notifyListeners();
+    _persist(record);
   }
 }
 

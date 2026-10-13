@@ -78,6 +78,22 @@ class TenderEntity {
   });
 }
 
+class MachineListing {
+  final String id;
+  final String type;
+  final String titleAr;
+  final String titleEn;
+  final double priceAed;
+  final String supplierId;
+  final bool isUserSubmitted;
+  const MachineListing({
+    required this.id, required this.type,
+    required this.titleAr, required this.titleEn,
+    required this.priceAed, required this.supplierId,
+    this.isUserSubmitted = false,
+  });
+}
+
 class BoqItem {
   final String itemCode;
   final String descriptionAr;
@@ -96,6 +112,7 @@ class BoqItem {
 }
 
 class TenderBidPackage {
+
   final String packageId;
   final String titleAr;
   final String titleEn;
