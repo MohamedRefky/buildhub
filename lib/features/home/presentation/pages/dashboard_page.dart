@@ -1,4 +1,4 @@
-// Port of ui/screens/DashboardScreen.kt (simplified)
+// Port of Kotlin ui/screens/DashboardScreen.kt (simplified)
 // Static labels via loc.t() (JSON); entity data via loc.tr() (DB-driven).
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
