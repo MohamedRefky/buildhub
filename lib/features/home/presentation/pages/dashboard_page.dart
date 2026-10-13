@@ -85,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: category,
+                initialValue: category,
                 decoration: InputDecoration(
                   labelText: loc.tr('التصنيف', 'Category'),
                 ),

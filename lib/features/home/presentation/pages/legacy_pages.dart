@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/localization/app_localization.dart';
 import '../../data/repositories/buildhub_repository.dart';
+import '../../data/datasources/services_catalog.dart';
 import './services_page.dart';
 
 class BuildNetScreen extends StatelessWidget {
@@ -134,12 +135,9 @@ class GenericServiceScreen extends StatelessWidget {
   const GenericServiceScreen({super.key, required this.tabId, this.serviceId, required this.onBack});
 
   String _resolveTitle(AppLocalization loc) {
-    for (final cat in allServiceCategories) {
-      for (final s in cat.items) {
-        if (s.targetTab == tabId) {
-          return loc.isArabic ? s.titleAr : s.titleEn;
-        }
-      }
+    final s = ServicesCatalog.findByTargetTab(tabId);
+    if (s != null) {
+      return loc.isArabic ? s.titleAr : s.titleEn;
     }
     return '${loc.t('common.service')} #$tabId';
   }
