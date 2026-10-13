@@ -1,7 +1,7 @@
 // Clean Architecture: Safety — Data repository.
 // Ports: SafetyPassportDao + BuildHubRepository safety parts + heat-stress.
 import 'package:flutter/material.dart';
-import '../domain/entities/safety_entities.dart';
+import '../../domain/entities/safety_entities.dart';
 
 class SafetyRepository extends ChangeNotifier {
   final List<SafetyPassport> passports = [];

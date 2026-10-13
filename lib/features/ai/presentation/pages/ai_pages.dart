@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/data/services/gemini_service.dart';
+import 'package:buildhub/features/ai/data/datasources/gemini_service.dart';
 
 class _AiShell extends StatefulWidget {
   final String titleKey;

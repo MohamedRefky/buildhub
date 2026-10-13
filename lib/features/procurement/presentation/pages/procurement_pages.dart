@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/features/procurement/data/procurement_repository.dart';
+import 'package:buildhub/features/procurement/data/repositories/procurement_repository.dart';
 
 class _Shell extends StatelessWidget {
   final String titleKey;

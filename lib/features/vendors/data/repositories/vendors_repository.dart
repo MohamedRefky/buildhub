@@ -2,13 +2,8 @@
 // Ports: ApprovedVendorFirestoreRepository.kt + VendorVerificationRepository.kt.
 // Firestore wiring: inject CloudFirestore later; in-memory now for offline-first.
 import 'package:flutter/material.dart';
-import '../domain/entities/vendor_entities.dart';
-
-abstract class IVendorsRepository {
-  List<ApprovedVendorEntity> get vendors;
-  Future<void> submit(ApprovedVendorEntity v);
-  Future<void> setVerified(String id, bool verified);
-}
+import '../../domain/entities/vendor_entities.dart';
+import '../../domain/repositories/vendors_repository.dart';
 
 class VendorsRepository extends ChangeNotifier implements IVendorsRepository {
   @override

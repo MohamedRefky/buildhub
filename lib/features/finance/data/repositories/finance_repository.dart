@@ -1,7 +1,7 @@
 // Clean Architecture: Finance — Data repository.
 // Ports: EnterpriseReportingRepository (finance) + BuildHubRepository claims parts.
 import 'package:flutter/material.dart';
-import '../domain/entities/finance_entities.dart';
+import '../../domain/entities/finance_entities.dart';
 
 class FinanceRepository extends ChangeNotifier {
   final List<FinanceClaimEntity> claims = [];

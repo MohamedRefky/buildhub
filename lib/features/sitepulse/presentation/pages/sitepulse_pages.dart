@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/features/sitepulse/data/sitepulse_repository.dart';
+import 'package:buildhub/features/sitepulse/data/repositories/sitepulse_repository.dart';
 
 class SitePulseScreen extends StatelessWidget {
   const SitePulseScreen({super.key});

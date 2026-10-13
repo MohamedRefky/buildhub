@@ -1,7 +1,7 @@
 // Clean Architecture: Procurement feature — Domain entities.
 // Ports: MaterialOrder.kt, OpenMarketModels.kt, Models.kt (submittal/permit/order parts),
 // SupplierMaterialEntity (market side).
-export 'package:buildhub/data/models/models.dart'
+export 'package:buildhub/features/home/domain/entities/home_entities.dart'
     show SubmittalDiscipline, SubmittalStatus, PermitAuthority;
 
 enum OrderStatus { draft, submitted, approved, inTransit, delivered, cancelled }

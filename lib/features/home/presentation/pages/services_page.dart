@@ -2,7 +2,7 @@
 // Service titles resolve from JSON keys (svc.*) — add new services in JSON only.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/localization/app_localization.dart';
+import '../../../../core/localization/app_localization.dart';
 
 class ServiceDef {
   final String id;

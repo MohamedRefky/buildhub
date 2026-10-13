@@ -1,7 +1,8 @@
+// Clean Architecture: Home feature — Data repository (shared project store).
 // Port of data/repository/BuildHubRepository.kt — in-memory store
 // backed by ChangeNotifier. Swap with sqflite/cloud_firestore later.
 import 'package:flutter/material.dart';
-import '../models/models.dart';
+import '../../domain/entities/home_entities.dart';
 
 class BuildHubRepository extends ChangeNotifier {
   Project currentProject = Project.demo();

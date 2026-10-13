@@ -2,7 +2,7 @@
 // Ports: ApprovalEngineRepository.kt + ExceptionOverrideRepository.kt +
 // OrionRoadmapRepository.kt + OrionGreenPassRepository.kt.
 import 'package:flutter/material.dart';
-import '../domain/entities/governance_entities.dart';
+import '../../domain/entities/governance_entities.dart';
 
 class GovernanceRepository extends ChangeNotifier {
   final List<ApprovalRequest> approvals = [];

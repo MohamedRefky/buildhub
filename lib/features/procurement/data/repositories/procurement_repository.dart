@@ -1,7 +1,7 @@
 // Clean Architecture: Procurement — Data repository.
 // Ports: FirestoreProcurementService.kt + MaterialOrderDao + Marketplace parts.
 import 'package:flutter/material.dart';
-import '../domain/entities/procurement_entities.dart';
+import '../../domain/entities/procurement_entities.dart';
 
 class ProcurementRepository extends ChangeNotifier {
   final List<MaterialOrderEntity> orders = [];

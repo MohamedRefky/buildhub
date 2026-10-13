@@ -1,6 +1,7 @@
 // Clean Architecture: SiteOps feature — Domain entities.
 // Ports: DailySiteLog.kt, GCCAuthorityModel parts, GEO/attendance,
 // WeatherBrain, WorkerWelfare, ESG, GreenWallet, market-intel, risk models.
+// NOTE: BuildNet feed models live in features/buildnet/domain/entities.
 class GeoAttendanceRecord {
   final String id;
   final String userId;
@@ -37,18 +38,6 @@ class RiskItem {
   const RiskItem({
     required this.id, required this.titleAr, required this.titleEn,
     required this.probability, required this.impact,
-  });
-}
-
-class SitePost {
-  final String id;
-  final String author;
-  final String bodyAr;
-  final String bodyEn;
-  final int likes;
-  const SitePost({
-    required this.id, required this.author,
-    required this.bodyAr, required this.bodyEn, this.likes = 0,
   });
 }
 

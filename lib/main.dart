@@ -6,12 +6,12 @@ import 'package:provider/provider.dart';
 import 'app/shell/app_shell.dart';
 import 'core/localization/app_localization.dart';
 import 'core/theme/app_theme.dart';
-import 'data/repository/buildhub_repository.dart';
-import 'features/finance/data/finance_repository.dart';
-import 'features/procurement/data/procurement_repository.dart';
-import 'features/safety/data/safety_repository.dart';
-import 'features/sitepulse/data/sitepulse_repository.dart';
-import 'features/vendors/data/vendors_repository.dart';
+import 'features/home/data/repositories/buildhub_repository.dart';
+import 'features/finance/data/repositories/finance_repository.dart';
+import 'features/procurement/data/repositories/procurement_repository.dart';
+import 'features/safety/data/repositories/safety_repository.dart';
+import 'features/sitepulse/data/repositories/sitepulse_repository.dart';
+import 'features/vendors/data/repositories/vendors_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

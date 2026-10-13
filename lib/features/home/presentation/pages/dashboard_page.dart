@@ -2,8 +2,8 @@
 // Static labels via loc.t() (JSON); entity data via loc.tr() (DB-driven).
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/localization/app_localization.dart';
-import '../../data/repository/buildhub_repository.dart';
+import '../../../../core/localization/app_localization.dart';
+import '../../data/repositories/buildhub_repository.dart';
 
 class DashboardScreen extends StatelessWidget {
   final void Function(int tab) onNavigateToTab;

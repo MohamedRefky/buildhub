@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/features/safety/data/safety_repository.dart';
+import 'package:buildhub/features/safety/data/repositories/safety_repository.dart';
 
 class SafetyFullScreen extends StatelessWidget {
   const SafetyFullScreen({super.key});

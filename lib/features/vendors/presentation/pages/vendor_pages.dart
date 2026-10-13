@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/features/vendors/data/vendors_repository.dart';
+import 'package:buildhub/features/vendors/data/repositories/vendors_repository.dart';
 import 'package:buildhub/features/vendors/domain/entities/vendor_entities.dart';
 
 String _statusKey(ApprovedVendorStatus s) => switch (s) {

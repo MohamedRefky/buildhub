@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/features/siteops/domain/entities/siteops_entities.dart';
+import 'package:buildhub/features/buildnet/domain/entities/buildnet_entities.dart';
 
 class BuildNetHubScreen extends StatelessWidget {
   final List<SitePost> posts;

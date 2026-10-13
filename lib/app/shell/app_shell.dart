@@ -4,18 +4,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/localization/app_localization.dart';
-import '../../ui/screens/dashboard_screen.dart';
-import '../../ui/screens/all_services_screen.dart';
-import '../../ui/screens/secondary_screens.dart';
-import '../../features/vendors/presentation/screens/vendor_screens.dart';
-import '../../features/procurement/presentation/screens/market_screens.dart';
-import '../../features/finance/presentation/screens/finance_screens.dart';
-import '../../features/safety/presentation/screens/safety_screens.dart';
-import '../../features/ai/presentation/screens/ai_screens.dart';
-import '../../features/documents/presentation/screens/document_screens.dart';
-import '../../features/siteops/presentation/screens/siteops_screens.dart';
-import '../../features/sitepulse/presentation/screens/sitepulse_screens.dart';
-import '../../features/buildnet/presentation/screens/buildnet_screens.dart';
+import '../../features/home/presentation/pages/dashboard_page.dart';
+import '../../features/home/presentation/pages/services_page.dart';
+import '../../features/home/presentation/pages/legacy_pages.dart';
+import '../../features/vendors/presentation/pages/vendor_pages.dart';
+import '../../features/procurement/presentation/pages/procurement_pages.dart';
+import '../../features/finance/presentation/pages/finance_pages.dart';
+import '../../features/safety/presentation/pages/safety_pages.dart';
+import '../../features/ai/presentation/pages/ai_pages.dart';
+import '../../features/documents/presentation/pages/document_pages.dart';
+import '../../features/siteops/presentation/pages/siteops_pages.dart';
+import '../../features/sitepulse/presentation/pages/sitepulse_pages.dart';
+import '../../features/buildnet/presentation/pages/buildnet_pages.dart';
 
 class AppShell extends StatefulWidget {
   final VoidCallback onToggleLanguage;

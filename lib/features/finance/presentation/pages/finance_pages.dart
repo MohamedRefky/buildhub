@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
-import 'package:buildhub/features/finance/data/finance_repository.dart';
+import 'package:buildhub/features/finance/data/repositories/finance_repository.dart';
 
 class _Shell extends StatelessWidget {
   final String titleKey;
