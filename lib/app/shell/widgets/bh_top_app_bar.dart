@@ -50,9 +50,9 @@ class BhTopAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               // Left: Logo & Project Switcher
               Expanded(
-                child: InkWell(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () => ProjectSwitchDialog.show(context),
-                  borderRadius: BorderRadius.circular(10),
                   child: Row(
                     children: [
                       Container(
