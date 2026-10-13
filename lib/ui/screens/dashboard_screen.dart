@@ -1,4 +1,5 @@
 // Port of ui/screens/DashboardScreen.kt (simplified)
+// Static labels via loc.t() (JSON); entity data via loc.tr() (DB-driven).
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/localization/app_localization.dart';
@@ -31,18 +32,18 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 LinearProgressIndicator(value: p.completionPercent / 100),
                 const SizedBox(height: 8),
-                Text('${loc.tr('الإنجاز', 'Progress')}: ${p.completionPercent}% • ${loc.tr('المتبقي', 'Remaining')}: ${p.daysRemaining} ${loc.tr('يوم', 'days')}'),
+                Text('${loc.t('dash.progress')}: ${p.completionPercent}% • ${loc.t('dash.remaining')}: ${p.daysRemaining} ${loc.t('dash.days')}'),
                 const SizedBox(height: 8),
-                Text('${loc.tr('الميزانية', 'Budget')}: ${loc.formatAed(p.budgetAed)}'),
-                Text('${loc.tr('المصروف', 'Spent')}: ${loc.formatAed(p.spentAed)}'),
-                Text('${loc.tr('المتبقي', 'Left')}: ${loc.formatAed(remaining)}'),
+                Text('${loc.t('dash.budget')}: ${loc.formatAed(p.budgetAed)}'),
+                Text('${loc.t('dash.spent')}: ${loc.formatAed(p.spentAed)}'),
+                Text('${loc.t('dash.left')}: ${loc.formatAed(remaining)}'),
                 Text('CPI ${p.cpi} • SPI ${p.spi}'),
               ],
             ),
           ),
         ),
         const SizedBox(height: 12),
-        Text(loc.tr('التنبيهات', 'Alerts'),
+        Text(loc.t('dash.alerts'),
             style: Theme.of(context).textTheme.titleMedium),
         ...repo.alerts.where((a) => !a.isResolved).map((a) => Card(
           child: ListTile(
@@ -50,7 +51,7 @@ class DashboardScreen extends StatelessWidget {
             subtitle: Text(loc.tr(a.detailAr, a.detailEn)),
             trailing: TextButton(
               onPressed: () => repo.resolveAlert(a.id),
-              child: Text(loc.tr('حل', 'Resolve')),
+              child: Text(loc.t('common.resolve')),
             ),
           ),
         )),
@@ -60,13 +61,13 @@ class DashboardScreen extends StatelessWidget {
           children: [
             ElevatedButton(
                 onPressed: () => onNavigateToTab(1),
-                child: Text(loc.tr('الخدمات', 'Services'))),
+                child: Text(loc.t('dash.services'))),
             ElevatedButton(
                 onPressed: () => onNavigateToTab(9),
-                child: Text(loc.tr('المساعد الذكي', 'Copilot'))),
+                child: Text(loc.t('dash.copilot'))),
             ElevatedButton(
                 onPressed: () => onNavigateToTab(6),
-                child: Text(loc.tr('السلامة', 'Safety'))),
+                child: Text(loc.t('dash.safety'))),
           ],
         ),
       ],

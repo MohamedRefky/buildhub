@@ -1,6 +1,7 @@
 // Flutter entry — Clean Architecture bootstrap.
 // Port of MainActivity.kt onCreate/setContent. Old Kotlin project untouched.
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'app/shell/app_shell.dart';
 import 'core/localization/app_localization.dart';
@@ -14,13 +15,17 @@ import 'features/vendors/data/vendors_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Preload default (Arabic) strings before first frame — no hardcoded fallback.
+  final localization = AppLocalization();
+  await localization.load();
   // TODO: await Firebase.initializeApp() after adding google-services.json /
   // GoogleService-Info.plist (mirrors google-services.json in the Kotlin app).
-  runApp(const BuildHubApp());
+  runApp(BuildHubApp(localization: localization));
 }
 
 class BuildHubApp extends StatefulWidget {
-  const BuildHubApp({super.key});
+  final AppLocalization localization;
+  const BuildHubApp({super.key, required this.localization});
   @override
   State<BuildHubApp> createState() => _BuildHubAppState();
 }
@@ -32,8 +37,8 @@ class _BuildHubAppState extends State<BuildHubApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AppLocalization>(
-            create: (_) => AppLocalization()),
+        ChangeNotifierProvider<AppLocalization>.value(
+            value: widget.localization),
         ChangeNotifierProvider<BuildHubRepository>(
             create: (_) => BuildHubRepository()),
         ChangeNotifierProvider<VendorsRepository>(
@@ -50,9 +55,15 @@ class _BuildHubAppState extends State<BuildHubApp> {
       builder: (context, _) {
         final loc = context.watch<AppLocalization>();
         return MaterialApp(
-          title: 'BuildHub / OrionB',
+          title: loc.t('app.title'),
           debugShowCheckedModeBanner: false,
           locale: loc.locale,
+          supportedLocales: const [Locale('ar'), Locale('en')],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           theme: AppTheme.darkIndustrial(),
           darkTheme: AppTheme.darkIndustrial(),
           themeMode: sunlightMode ? ThemeMode.light : ThemeMode.dark,

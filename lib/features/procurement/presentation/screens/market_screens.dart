@@ -2,18 +2,20 @@
 // Covers: ConstructionOpenMarketScreen, MachineryMarketplaceScreen,
 // OrdersProcurementScreen, ProcurementScreen, QuotationComparisonScreen,
 // GpsMaterialLocatorScreen, DrawingPinRecordScreen, ProjectBusinessPlanScreen.
+// Titles/bodies resolve from JSON keys — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
 import 'package:buildhub/features/procurement/data/procurement_repository.dart';
 
 class _Shell extends StatelessWidget {
-  final String ar; final String en; final Widget child;
-  const _Shell({required this.ar, required this.en, required this.child});
+  final String titleKey;
+  final Widget child;
+  const _Shell({required this.titleKey, required this.child});
   @override
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
-    return Scaffold(appBar: AppBar(title: Text(loc.tr(ar, en))), body: child);
+    return Scaffold(appBar: AppBar(title: Text(loc.t(titleKey))), body: child);
   }
 }
 
@@ -24,22 +26,24 @@ class OpenMarketScreen extends StatelessWidget {
     final loc = context.watch<AppLocalization>();
     final repo = context.watch<ProcurementRepository>();
     if (repo.marketplace.isEmpty) {
-      return _Shell(ar: 'السوق المفتوح', en: 'Open Market',
-        child: Center(child: Text(loc.tr('أضف عروض الموردين من Firestore', 'Add supplier listings from Firestore'))));
+      return _Shell(titleKey: 'mkt.open',
+        child: Center(child: Text(loc.t('mkt.empty'))));
     }
-    return _Shell(ar: 'السوق المفتوح', en: 'Open Market',
+    return _Shell(titleKey: 'mkt.open',
       child: ListView(children: repo.marketplace.map((m) =>
         ListTile(title: Text(loc.tr(m.titleAr, m.titleEn)),
-          trailing: Text('${m.priceAed}'))).toList()));
+          trailing: Text(loc.formatAed(m.priceAed)))).toList()));
   }
 }
 
 class MachineryMarketScreen extends StatelessWidget {
   const MachineryMarketScreen({super.key});
   @override
-  Widget build(BuildContext context) =>
-      _Shell(ar: 'سوق المعدات الثقيلة', en: 'Machinery Market',
-        child: const Center(child: Text('Dubizzle-style • wire Firestore')));
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Shell(titleKey: 'mkt.machinery',
+      child: Center(child: Text(loc.t('mkt.machinery_body'))));
+  }
 }
 
 class QuotationComparisonScreen extends StatelessWidget {
@@ -48,12 +52,12 @@ class QuotationComparisonScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     final repo = context.watch<ProcurementRepository>();
-    return _Shell(ar: 'مقارنة عروض الأسعار', en: 'Quotation Comparison',
+    return _Shell(titleKey: 'mkt.quotes',
       child: repo.quotations.isEmpty
-        ? Center(child: Text(loc.tr('لا عروض بعد', 'No quotations yet')))
+        ? Center(child: Text(loc.t('mkt.no_quotes')))
         : ListView(children: repo.quotations.map((q) =>
           ListTile(title: Text(q.supplierId),
-            subtitle: Text('${q.totalAed} AED • ${q.deliveryDays}d'))).toList()));
+            subtitle: Text('${loc.formatAed(q.totalAed)} • ${q.deliveryDays} ${loc.t('dash.days')}'))).toList()));
   }
 }
 
@@ -63,9 +67,7 @@ class GpsLocatorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     // Port of GpsMaterialLocatorScreen: geolocator + nearest batch plant.
-    return _Shell(ar: 'محدد المواد GPS', en: 'GPS Material Locator',
-      child: Center(child: Text(loc.tr(
-        'اطلب إذن الموقع ثم اعرض أقرب محطة خرسانة',
-        'Request location permission, then show nearest batch plant'))));
+    return _Shell(titleKey: 'mkt.gps',
+      child: Center(child: Text(loc.t('mkt.gps_note'))));
   }
 }

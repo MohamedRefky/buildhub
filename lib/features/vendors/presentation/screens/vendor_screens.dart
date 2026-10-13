@@ -2,21 +2,29 @@
 // Covers Kotlin: VendorVerificationScreen, VendorVerificationHubScreen,
 // ApprovedVendorManagementScreen, SuppliersCompaniesDirectoryScreen,
 // GCCAuthoritiesHubScreen, GccTendersAiScreen.
+// Titles resolve from JSON keys — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
 import 'package:buildhub/features/vendors/data/vendors_repository.dart';
+import 'package:buildhub/features/vendors/domain/entities/vendor_entities.dart';
+
+String _statusKey(ApprovedVendorStatus s) => switch (s) {
+      ApprovedVendorStatus.draft => 'ven.status_draft',
+      ApprovedVendorStatus.submitted => 'ven.status_submitted',
+      ApprovedVendorStatus.verified => 'ven.status_verified',
+      ApprovedVendorStatus.rejected => 'ven.status_rejected',
+    };
 
 class _Shell extends StatelessWidget {
-  final String ar;
-  final String en;
+  final String titleKey;
   final Widget child;
-  const _Shell({required this.ar, required this.en, required this.child});
+  const _Shell({required this.titleKey, required this.child});
   @override
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr(ar, en))),
+      appBar: AppBar(title: Text(loc.t(titleKey))),
       body: child,
     );
   }
@@ -26,22 +34,24 @@ class VendorVerificationScreen extends StatelessWidget {
   const VendorVerificationScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final loc = context.watch<AppLocalization>();
     final repo = context.watch<VendorsRepository>();
     return _Shell(
-      ar: 'توثيق الموردين', en: 'Vendor Verification',
+      titleKey: 'ven.verify',
       child: ListView(
         padding: const EdgeInsets.all(16),
-        children: repo.vendors.map((v) => Card(
-          child: ListTile(
-            title: Text(loc.tr(v.companyNameAr.isEmpty ? v.companyName : v.companyNameAr, v.companyName)),
-            subtitle: Text('${v.category} • ${v.tradeLicenseNumber}'),
-            trailing: Icon(
-              v.isVerified ? Icons.verified : Icons.pending,
-              color: v.isVerified ? Colors.green : Colors.amber,
+        children: repo.vendors.map((v) {
+          final loc = context.read<AppLocalization>();
+          return Card(
+            child: ListTile(
+              title: Text(loc.tr(v.companyNameAr.isEmpty ? v.companyName : v.companyNameAr, v.companyName)),
+              subtitle: Text('${v.category} • ${v.tradeLicenseNumber}'),
+              trailing: Icon(
+                v.isVerified ? Icons.verified : Icons.pending,
+                color: v.isVerified ? Colors.green : Colors.amber,
+              ),
             ),
-          ),
-        )).toList(),
+          );
+        }).toList(),
       ),
     );
   }
@@ -59,17 +69,19 @@ class ApprovedVendorManagementScreen extends StatelessWidget {
   const ApprovedVendorManagementScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final loc = context.watch<AppLocalization>();
     final repo = context.watch<VendorsRepository>();
     return _Shell(
-      ar: 'إدارة الموردين المعتمدين', en: 'Approved Vendors',
+      titleKey: 'ven.manage',
       child: ListView(
-        children: repo.vendors.map((v) => SwitchListTile(
-          title: Text(loc.tr(v.companyNameAr.isEmpty ? v.companyName : v.companyNameAr, v.companyName)),
-          subtitle: Text(v.status.name),
-          value: v.isVerified,
-          onChanged: (val) => repo.setVerified(v.id, val),
-        )).toList(),
+        children: repo.vendors.map((v) {
+          final loc = context.read<AppLocalization>();
+          return SwitchListTile(
+            title: Text(loc.tr(v.companyNameAr.isEmpty ? v.companyName : v.companyNameAr, v.companyName)),
+            subtitle: Text(loc.t(_statusKey(v.status))),
+            value: v.isVerified,
+            onChanged: (val) => repo.setVerified(v.id, val),
+          );
+        }).toList(),
       ),
     );
   }
@@ -81,29 +93,29 @@ class SuppliersDirectoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return _Shell(
-      ar: 'دليل الموردين والشركات', en: 'Suppliers Directory',
-      child: Center(child: Text(loc.tr('اربط Firestore مجموعة vendors', 'Wire Firestore vendors collection'))),
+      titleKey: 'ven.directory',
+      child: Center(child: Text(loc.t('ven.wire_vendors'))),
     );
   }
 }
 
 class GccAuthoritiesHubScreen extends StatelessWidget {
   const GccAuthoritiesHubScreen({super.key});
-  static const authorities = [
-    ('بلدية دبي', 'Dubai Municipality'),
-    ('هيئة الطرق والمواصلات', 'RTA'),
-    ('هيئة كهرباء ومياه دبي', 'DEWA'),
-    ('الدفاع المدني', 'Civil Defense'),
+  static const authorityKeys = [
+    'ven.auth_dm',
+    'ven.auth_rta',
+    'ven.auth_dewa',
+    'ven.auth_cd',
   ];
   @override
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return _Shell(
-      ar: 'بوابة الجهات الحكومية', en: 'Authorities Hub',
+      titleKey: 'ven.auth_hub',
       child: ListView(
-        children: authorities.map((a) => ListTile(
+        children: authorityKeys.map((k) => ListTile(
           leading: const Icon(Icons.account_balance),
-          title: Text(loc.tr(a.$1, a.$2)),
+          title: Text(loc.t(k)),
         )).toList(),
       ),
     );
@@ -116,8 +128,8 @@ class GccTendersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return _Shell(
-      ar: 'مناقصات الخليج بالذكاء الاصطناعي', en: 'GCC Tenders AI',
-      child: Center(child: Text(loc.tr('لا مناقصات — فعّل المزامنة', 'No tenders — enable sync'))),
+      titleKey: 'ven.tenders',
+      child: Center(child: Text(loc.t('ven.no_tenders'))),
     );
   }
 }

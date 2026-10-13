@@ -2,6 +2,7 @@
 // Covers sitepulse/: SitePulseScreen, SitePulseOsViews, SitePulseMasterPlatformViews,
 // SitePulseFieldQualityViews, SitePulseCommercialPlatformViews,
 // SitePulseDecisionSupportScreen, CmMorningDashboardView, OrionAiSchemas.
+// Tab titles resolve from JSON keys — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
@@ -9,28 +10,31 @@ import 'package:buildhub/features/sitepulse/data/sitepulse_repository.dart';
 
 class SitePulseScreen extends StatelessWidget {
   const SitePulseScreen({super.key});
+
+  static const tabKeys = [
+    'sp.tab_morning',
+    'sp.tab_commercial',
+    'sp.tab_quality',
+    'sp.tab_decisions',
+    'sp.tab_reports',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     final repo = context.watch<SitePulseRepository>();
-    final tabs = [
-      loc.tr('القيادة الصباحية', 'Morning Command'),
-      loc.tr('التجارية', 'Commercial'),
-      loc.tr('الموقع والجودة', 'Site & Quality'),
-      loc.tr('القرارات', 'Decisions'),
-      loc.tr('التقارير AI', 'AI Reports'),
-    ];
+    final tabs = tabKeys.map(loc.t).toList();
     return DefaultTabController(
       length: tabs.length,
       initialIndex: repo.initialTab.clamp(0, tabs.length - 1).toInt(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(loc.tr('مركز قيادة الموقع', 'SitePulse Command')),
+          title: Text(loc.t('sp.command')),
           bottom: TabBar(isScrollable: true,
             tabs: tabs.map((t) => Tab(text: t)).toList()),
         ),
         body: TabBarView(children: tabs.map((t) =>
-          Center(child: Text('$t • subTab ${repo.initialSubTab}'))).toList()),
+          Center(child: Text('$t • ${loc.t('sp.subtab')} ${repo.initialSubTab}'))).toList()),
       ),
     );
   }
@@ -42,8 +46,8 @@ class SitePulseDecisionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr('دعم القرار', 'Decision Support'))),
-      body: const Center(child: Text('SitePulseDecisionModels')),
+      appBar: AppBar(title: Text(loc.t('sp.decision'))),
+      body: Center(child: Text(loc.t('sp.decision_body'))),
     );
   }
 }
@@ -56,8 +60,8 @@ class MorningDashboardView extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.wb_sunny),
-        title: Text(loc.tr('لوحة الصباح', 'Morning Dashboard')),
-        subtitle: Text(loc.tr('ملخص CM اليومي', 'Daily CM summary')),
+        title: Text(loc.t('sp.morning')),
+        subtitle: Text(loc.t('sp.morning_sub')),
       ),
     );
   }

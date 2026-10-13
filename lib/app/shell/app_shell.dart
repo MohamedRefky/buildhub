@@ -1,5 +1,6 @@
 // Clean Architecture: App shell — port of BuildHubSuperApp (MainActivity.kt).
 // Bottom nav 5 tabs; inner routing table mirrors MainActivity selectedTabIndex 0..58.
+// All titles come from assets/lang JSON via loc.t() — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/localization/app_localization.dart';
@@ -38,166 +39,166 @@ class _AppShellState extends State<AppShell> {
     switch (tab) {
       case 0:
         body = DashboardScreen(onNavigateToTab: go);
-        title = loc.tr('الرئيسية', 'Home');
+        title = loc.t('screen.dashboard');
       case 1:
         body = AllServicesScreen(onSelect: go);
-        title = loc.tr('الخدمات', 'Services');
+        title = loc.t('screen.services');
       case 2:
         body = const BuildNetHubScreen();
-        title = loc.tr('التجاري', 'Commercial');
+        title = loc.t('nav.commercial');
       case 3:
         body = const OrdersScreen();
-        title = loc.tr('المستندات', 'Documents');
+        title = loc.t('nav.docs');
       case 4:
         body = const AiCopilotFullScreen();
-        title = loc.tr('المساعد الذكي', 'Copilot');
+        title = loc.t('nav.copilot');
       case 5:
         body = const ProcurementScreen();
-        title = loc.tr('التوريد', 'Procurement');
+        title = loc.t('screen.procurement');
       case 6:
         body = const SafetyFullScreen();
-        title = loc.tr('السلامة', 'Safety');
+        title = loc.t('screen.safety');
       case 7:
         body = const FinanceClaimsFullScreen();
-        title = loc.tr('المالية', 'Finance');
+        title = loc.t('screen.finance');
       case 9:
         body = const AiCopilotFullScreen();
-        title = loc.tr('المساعد', 'Copilot');
+        title = loc.t('nav.copilot');
       case 10:
         body = const UserFilesScreen();
-        title = loc.tr('ملفاتي', 'My Files');
+        title = loc.t('screen.myfiles');
       case 11:
         body = const AuthScreen();
-        title = loc.tr('الدخول', 'Auth');
+        title = loc.t('screen.auth');
       case 12:
         body = const GccAuthoritiesHubScreen();
-        title = loc.tr('الجهات', 'Authorities');
+        title = loc.t('screen.authorities');
       case 13:
         body = const OpenMarketScreen();
-        title = loc.tr('السوق', 'Market');
+        title = loc.t('screen.market');
       case 14:
         body = const GpsLocatorScreen();
-        title = loc.tr('GPS', 'GPS');
+        title = loc.t('screen.gps');
       case 15:
         body = const MachineryMarketScreen();
-        title = loc.tr('المعدات', 'Equipment');
+        title = loc.t('screen.equipment');
       case 16:
         body = const GccTendersScreen();
-        title = loc.tr('المناقصات', 'Tenders');
+        title = loc.t('screen.tenders');
       case 17:
         body = const SuppliersDirectoryScreen();
-        title = loc.tr('الموردون', 'Suppliers');
+        title = loc.t('screen.suppliers');
       case 18:
         body = const GanttBaselineScreen();
-        title = loc.tr('الجانت', 'Gantt');
+        title = loc.t('screen.gantt');
       case 19:
         body = const PredictiveDelayFullScreen();
-        title = loc.tr('التأخير', 'Delay');
+        title = loc.t('screen.delay');
       case 20:
         body = const MarketIntelScreen();
-        title = loc.tr('السوق', 'Intel');
+        title = loc.t('screen.intel');
       case 21:
         body = const AiLegalScreen();
-        title = loc.tr('القانوني', 'Legal');
+        title = loc.t('screen.legal');
       case 22:
         body = const QuotationComparisonScreen();
-        title = loc.tr('العروض', 'Quotes');
+        title = loc.t('screen.quotes');
       case 23:
         body = const LibraryScreen();
-        title = loc.tr('المكتبة', 'Library');
+        title = loc.t('screen.library');
       case 24:
         body = const CoursesScreen();
-        title = loc.tr('الدورات', 'Courses');
+        title = loc.t('screen.courses');
       case 25:
         body = const CostToCompleteFullScreen();
-        title = loc.tr('التكلفة', 'Cost');
+        title = loc.t('screen.cost');
       case 26:
         body = const SiteTalkFullScreen();
-        title = loc.tr('التواصل', 'Talk');
+        title = loc.t('screen.talk');
       case 27:
         body = const VaultScreen();
-        title = loc.tr('الخزنة', 'Vault');
+        title = loc.t('screen.vault');
       case 28:
         body = const GeoAttendanceFullScreen();
-        title = loc.tr('الحضور', 'Attendance');
+        title = loc.t('screen.attendance');
       case 29:
         body = const RfiScreen();
-        title = loc.tr('RFI', 'RFI');
+        title = loc.t('screen.rfi');
       case 32:
         body = const DrawingsScreen();
-        title = loc.tr('المخططات', 'Drawings');
+        title = loc.t('screen.drawings');
       case 33:
         body = const IntegrationsScreen();
-        title = loc.tr('التكاملات', 'Integrations');
+        title = loc.t('screen.integrations');
       case 34:
         body = const DailyReportFullScreen();
-        title = loc.tr('اليومي', 'Daily');
+        title = loc.t('screen.daily');
       case 35:
         body = const WeatherFullScreen();
-        title = loc.tr('الطقس', 'Weather');
+        title = loc.t('screen.weather');
       case 36:
         body = const AskTheSiteScreenFull();
-        title = loc.tr('اسأل', 'Ask');
+        title = loc.t('screen.ask');
       case 37:
         body = const EsgScreen();
-        title = loc.tr('ESG', 'ESG');
+        title = loc.t('screen.esg');
       case 38:
         body = const WelfareScreen();
-        title = loc.tr('الرعاية', 'Welfare');
+        title = loc.t('screen.welfare');
       case 40:
         body = const FinancialAiFullScreen();
-        title = loc.tr('المالي', 'FinAI');
+        title = loc.t('screen.finai');
       case 41:
         body = const OfflineSyncScreen();
-        title = loc.tr('الأوفلاين', 'Offline');
+        title = loc.t('screen.offline');
       case 43:
         body = const AutonomousAgentScreen();
-        title = loc.tr('الوكيل', 'Agent');
+        title = loc.t('screen.agent');
       case 44:
         body = const ActivityEntryScreen();
-        title = loc.tr('الأنشطة', 'Activities');
+        title = loc.t('screen.activities');
       case 45:
         body = const CloudSyncScreen();
-        title = loc.tr('السحابة', 'Cloud');
+        title = loc.t('screen.cloud');
       case 46:
         body = const ProgressCameraScreen();
-        title = loc.tr('الكاميرا', 'Camera');
+        title = loc.t('screen.camera');
       case 47:
         body = const AiSuperintendentScreen();
-        title = loc.tr('المشرف', 'Super');
+        title = loc.t('screen.super');
       case 48:
         body = const RiskHeatMapFullScreen();
-        title = loc.tr('المخاطر', 'Risk');
+        title = loc.t('screen.risk');
       case 49:
         body = const BusinessPlanFullScreen();
-        title = loc.tr('الأعمال', 'BizPlan');
+        title = loc.t('screen.bizplan');
       case 50:
         body = const SitePulseScreen();
-        title = loc.tr('القيادة', 'Command');
+        title = loc.t('screen.command');
       case 52:
         body = const PettyCashFullScreen();
-        title = loc.tr('العهدة', 'PettyCash');
+        title = loc.t('screen.pettycash');
       case 53:
         body = const GreenWalletScreen();
-        title = loc.tr('الخضراء', 'Green');
+        title = loc.t('screen.green');
       case 54:
         body = const ApprovalEngineFullScreen();
-        title = loc.tr('الاعتماد', 'Approval');
+        title = loc.t('screen.approval');
       case 55:
         body = const ExceptionOverrideFullScreen();
-        title = loc.tr('التجاوز', 'Override');
+        title = loc.t('screen.override');
       case 56:
         body = const RoadmapScreen();
-        title = loc.tr('الخارطة', 'Roadmap');
+        title = loc.t('screen.roadmap');
       case 57:
         body = const BaselineSuiteScreen();
-        title = loc.tr('البيزلاين', 'Baseline');
+        title = loc.t('screen.baseline');
       case 58:
         body = const ApprovedVendorManagementScreen();
-        title = loc.tr('المعتمدون', 'Vendors');
+        title = loc.t('screen.vendors');
       default:
         body = GenericServiceScreen(tabId: tab, onBack: () => go(1));
-        title = loc.tr('خدمة', 'Service');
+        title = loc.t('common.service');
     }
 
     final isTopLevel = [0, 1, 2, 3, 4].contains(tab);
@@ -206,9 +207,10 @@ class _AppShellState extends State<AppShell> {
         title: Text(title),
         actions: [
           IconButton(icon: const Icon(Icons.light_mode),
-            onPressed: widget.onToggleSunlight, tooltip: 'Sunlight'),
+            onPressed: widget.onToggleSunlight,
+            tooltip: loc.t('acct.sunlight')),
           TextButton(onPressed: widget.onToggleLanguage,
-            child: Text(loc.tr('EN', 'عربي'),
+            child: Text(loc.t('common.lang_toggle'),
               style: const TextStyle(color: Colors.white))),
         ],
       ),
@@ -219,15 +221,15 @@ class _AppShellState extends State<AppShell> {
               onDestinationSelected: (i) => go(i),
               destinations: [
                 NavigationDestination(icon: const Icon(Icons.dashboard),
-                  label: loc.tr('الرئيسية', 'Home')),
+                  label: loc.t('nav.home')),
                 NavigationDestination(icon: const Icon(Icons.apps),
-                  label: loc.tr('الخدمات', 'Services')),
+                  label: loc.t('nav.services')),
                 NavigationDestination(icon: const Icon(Icons.receipt),
-                  label: loc.tr('التجاري', 'Commercial')),
+                  label: loc.t('nav.commercial')),
                 NavigationDestination(icon: const Icon(Icons.description),
-                  label: loc.tr('المستندات', 'Docs')),
+                  label: loc.t('nav.docs')),
                 NavigationDestination(icon: const Icon(Icons.smart_toy),
-                  label: loc.tr('المساعد', 'Copilot')),
+                  label: loc.t('nav.copilot')),
               ],
             )
           : null,

@@ -7,6 +7,7 @@
 // HistoricalGanttBaselineScreen, AiBaselineSuiteScreen,
 // ApprovalEngineScreen, ExceptionOverrideScreen,
 // AutonomousAgentControlScreen, SmartOfflineSync, FirebaseCloudSync.
+// Titles/bodies resolve from JSON keys — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
@@ -14,15 +15,15 @@ import 'package:buildhub/features/siteops/domain/entities/siteops_entities.dart'
 import 'package:buildhub/features/planning/domain/planning_entities.dart';
 
 class _Op extends StatelessWidget {
-  final String ar; final String en; final Widget? child;
-  const _Op({required this.ar, required this.en, this.child});
+  final String titleKey;
+  final Widget? child;
+  const _Op({required this.titleKey, this.child});
   @override
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr(ar, en))),
-      body: child ?? Center(child: Text(loc.tr(
-        'يُنقل من النسخة Kotlin تدريجياً', 'Migrate incrementally from Kotlin'))),
+      appBar: AppBar(title: Text(loc.t(titleKey))),
+      body: child ?? Center(child: Text(loc.t('common.migrate_note'))),
     );
   }
 }
@@ -30,33 +31,39 @@ class _Op extends StatelessWidget {
 class GeoAttendanceFullScreen extends StatelessWidget {
   const GeoAttendanceFullScreen({super.key});
   @override
-  Widget build(BuildContext context) => _Op(
-    ar: 'الحضور الجغرافي', en: 'Geo Attendance',
-    child: const Center(child: Text('geolocator • geofence check')),
-  );
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Op(
+      titleKey: 'ops.geo',
+      child: Center(child: Text(loc.t('ops.geo_body'))),
+    );
+  }
 }
 
 class DailyReportFullScreen extends StatelessWidget {
   const DailyReportFullScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'التقرير اليومي الذكي', en: 'Daily Report Agent');
+      const _Op(titleKey: 'ops.daily');
 }
 
 class ActivityEntryScreen extends StatelessWidget {
   const ActivityEntryScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'إدخال الأنشطة', en: 'Activity Entry');
+      const _Op(titleKey: 'ops.activity');
 }
 
 class OfflineSyncScreen extends StatelessWidget {
   const OfflineSyncScreen({super.key});
   @override
-  Widget build(BuildContext context) => const _Op(
-    ar: 'المزامنة دون اتصال', en: 'Offline Sync',
-    child: Center(child: Text('OfflineSyncManager • SyncWorker • sqflite queue')),
-  );
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Op(
+      titleKey: 'ops.offline',
+      child: Center(child: Text(loc.t('ops.offline_body'))),
+    );
+  }
 }
 
 class WeatherFullScreen extends StatelessWidget {
@@ -64,7 +71,7 @@ class WeatherFullScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const w = WeatherSnapshot(tempC: 42, humidity: 68, windMs: 8.5);
-    return _Op(ar: 'عقل الطقس', en: 'Weather Brain',
+    return _Op(titleKey: 'ops.weather',
       child: Center(child: Text('${w.tempC}°C • ${w.humidity}% • ${w.windMs} m/s')));
   }
 }
@@ -73,37 +80,45 @@ class WelfareScreen extends StatelessWidget {
   const WelfareScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'رعاية العمال', en: 'Worker Welfare');
+      const _Op(titleKey: 'ops.welfare');
 }
 
 class EsgScreen extends StatelessWidget {
   const EsgScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'الاستدامة ESG', en: 'ESG Sustainability');
+      const _Op(titleKey: 'ops.esg');
 }
 
 class GreenWalletScreen extends StatelessWidget {
   const GreenWalletScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'المحفظة الخضراء وشهادات الطاقة', en: 'Green Wallet');
+      const _Op(titleKey: 'ops.green_wallet');
 }
 
 class GreenPassScreen extends StatelessWidget {
   const GreenPassScreen({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const _Op(ar: 'التصريح الأخضر', en: 'Green Pass',
-        child: Center(child: Text('OrionGreenPassRepository')));
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Op(
+      titleKey: 'ops.green_pass',
+      child: Center(child: Text(loc.t('ops.green_pass_body'))),
+    );
+  }
 }
 
 class RoadmapScreen extends StatelessWidget {
   const RoadmapScreen({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const _Op(ar: 'خارطة الطريق ١٤ مرحلة', en: 'Roadmap 14 Phases',
-        child: Center(child: Text('OrionRoadmapRepository • 14 gated phases')));
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Op(
+      titleKey: 'ops.roadmap',
+      child: Center(child: Text(loc.t('ops.roadmap_body'))),
+    );
+  }
 }
 
 class RiskHeatMapFullScreen extends StatelessWidget {
@@ -111,60 +126,72 @@ class RiskHeatMapFullScreen extends StatelessWidget {
   const RiskHeatMapFullScreen({super.key, this.risks = const []});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'خريطة المخاطر', en: 'Risk Heat Map');
+      const _Op(titleKey: 'ops.risk');
 }
 
 class MarketIntelScreen extends StatelessWidget {
   const MarketIntelScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'ذكاء السوق', en: 'Market Intelligence');
+      const _Op(titleKey: 'ops.intel');
 }
 
 class PredictiveDelayFullScreen extends StatelessWidget {
   const PredictiveDelayFullScreen({super.key});
   @override
-  Widget build(BuildContext context) => _Op(
-    ar: 'توقع التأخير CPM', en: 'Predictive Delay',
-    child: Center(child: Text(
-      'CpmEngine: ${CpmEngine.calculate(const []).length} nodes • deterministic, never LLM')),
-  );
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    final count = CpmEngine.calculate(const []).length;
+    return _Op(
+      titleKey: 'ops.delay',
+      child: Center(
+          child: Text(
+              loc.t('ops.delay_body').replaceFirst('{n}', '$count'))),
+    );
+  }
 }
 
 class GanttBaselineScreen extends StatelessWidget {
   const GanttBaselineScreen({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const _Op(ar: 'البيزلاين والجانت', en: 'Gantt Baseline',
-        child: Center(child: Text('AiBaselineGeneratorService + WBS')));
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Op(
+      titleKey: 'ops.gantt',
+      child: Center(child: Text(loc.t('ops.gantt_body'))),
+    );
+  }
 }
 
 class BaselineSuiteScreen extends StatelessWidget {
   const BaselineSuiteScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'حزمة البيزلاين', en: 'Baseline Suite');
+      const _Op(titleKey: 'ops.baseline');
 }
 
 class ApprovalEngineFullScreen extends StatelessWidget {
   const ApprovalEngineFullScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'محرك الاعتمادات', en: 'Approval Engine');
+      const _Op(titleKey: 'ops.approval');
 }
 
 class ExceptionOverrideFullScreen extends StatelessWidget {
   const ExceptionOverrideFullScreen({super.key});
   @override
   Widget build(BuildContext context) =>
-      const _Op(ar: 'التجاوزات الاستثنائية', en: 'Exception Override');
+      const _Op(titleKey: 'ops.override');
 }
 
 class AutonomousAgentScreen extends StatelessWidget {
   const AutonomousAgentScreen({super.key});
   @override
-  Widget build(BuildContext context) => const _Op(
-    ar: 'الوكيل المستقل', en: 'Autonomous Agent',
-    child: Center(child: Text('AutonomousInputAgent • SiteAiAgent')),
-  );
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return _Op(
+      titleKey: 'ops.agent',
+      child: Center(child: Text(loc.t('ops.agent_body'))),
+    );
+  }
 }

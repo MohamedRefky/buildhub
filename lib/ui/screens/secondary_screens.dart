@@ -1,4 +1,5 @@
 // Simple ports for secondary tabs (BuildNet, Orders, Account, Procurement, Safety, Finance, AI Copilot)
+// Static labels via loc.t() (JSON); entity data via loc.tr() (DB-driven).
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/localization/app_localization.dart';
@@ -10,7 +11,7 @@ class BuildNetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
-    return Center(child: Text(loc.tr('شبكة BuildNet المهنية', 'BuildNet Professional Network')));
+    return Center(child: Text(loc.t('bn.network_full')));
   }
 }
 
@@ -21,7 +22,7 @@ class OrdersScreen extends StatelessWidget {
     final loc = context.watch<AppLocalization>();
     final repo = context.watch<BuildHubRepository>();
     if (repo.siteLogs.isEmpty) {
-      return Center(child: Text(loc.tr('لا توجد طلبات بعد', 'No orders yet')));
+      return Center(child: Text(loc.t('ord.empty')));
     }
     return ListView(children: repo.siteLogs.map((l) =>
       ListTile(title: Text(loc.tr(l.summaryAr, l.summaryEn)), subtitle: Text(l.dateStr))).toList());
@@ -38,12 +39,16 @@ class AccountScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        ListTile(title: Text(loc.tr('اللغة', 'Language')),
-          trailing: TextButton(onPressed: onToggleLanguage, child: Text(loc.tr('English', 'العربية')))),
-        ListTile(title: Text(loc.tr('وضع الشمس', 'Sunlight mode')),
+        ListTile(title: Text(loc.t('acct.language')),
+          trailing: TextButton(
+            onPressed: onToggleLanguage,
+            child: Text(loc.isArabic
+                ? loc.t('acct.to_english')
+                : loc.t('acct.to_arabic')))),
+        ListTile(title: Text(loc.t('acct.sunlight')),
           trailing: Switch(value: Theme.of(context).brightness == Brightness.light,
             onChanged: (_) => onToggleSunlight())),
-        ListTile(title: Text(loc.tr('المشروع', 'Project')),
+        ListTile(title: Text(loc.t('acct.project')),
           subtitle: Text(loc.tr(
             context.read<BuildHubRepository>().currentProject.nameAr,
             context.read<BuildHubRepository>().currentProject.nameEn))),
@@ -61,14 +66,14 @@ class ProcurementScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(loc.tr('الاعتمادات والتصاريح', 'Submittals & Permits'),
+        Text(loc.t('proc.submittals_permits'),
             style: Theme.of(context).textTheme.titleMedium),
         ...repo.submittals.map((s) => ListTile(
           title: Text(loc.tr(s.titleAr, s.titleEn)),
           subtitle: Text('${s.submittalNo} • ${s.reviewCode}'),
         )),
         if (repo.submittals.isEmpty)
-          Text(loc.tr('لا اعتمادات مسجلة — مربوط بـ Firestore لاحقاً', 'No submittals — wire to Firestore later')),
+          Text(loc.t('proc.no_submittals')),
       ],
     );
   }
@@ -87,7 +92,7 @@ class SafetyScreen extends StatelessWidget {
         Card(child: ListTile(
           leading: const Icon(Icons.thermostat),
           title: Text('${h.ambientTempC}°C • WBGT ${h.wbgtTempC}'),
-          subtitle: Text(loc.tr('حظر الظهيرة ساري ١٢:٣٠ - ٣:٠٠', 'Midday break 12:30-3:00')),
+          subtitle: Text(loc.t('safe.midday')),
         )),
         ...repo.safetyTickets.map((t) => ListTile(
           title: Text(loc.tr(t.titleAr, t.titleEn)),
@@ -108,9 +113,9 @@ class FinanceScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(loc.tr('المالية والمطالبات FIDIC', 'Finance & FIDIC Claims'),
+        Text(loc.t('fin.title'),
             style: Theme.of(context).textTheme.titleMedium),
-        Text('${loc.tr('الميزانية', 'Budget')}: ${loc.formatAed(p.budgetAed)}'),
+        Text('${loc.t('fin.budget')}: ${loc.formatAed(p.budgetAed)}'),
         ...repo.claims.map((c) => ListTile(
           title: Text(loc.tr(c.titleAr, c.titleEn)),
           subtitle: Text('${c.noticeNo} • ${c.subClause}'),
@@ -128,11 +133,7 @@ class AiCopilotScreen extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: Text(
-          loc.tr('المساعد الذكي — اربط GEMINI_API_KEY عبر --dart-define',
-              'AI Copilot — pass GEMINI_API_KEY via --dart-define'),
-          textAlign: TextAlign.center,
-        ),
+        child: Text(loc.t('ai.wire_gemini'), textAlign: TextAlign.center),
       ),
     );
   }
@@ -149,9 +150,9 @@ class GenericServiceScreen extends StatelessWidget {
   String _resolveTitle(AppLocalization loc) {
     try {
       final def = allServices.firstWhere((s) => s.targetTab == tabId);
-      return loc.tr(def.titleAr, def.titleEn);
+      return loc.t(def.titleKey);
     } catch (_) {
-      return '${loc.tr('خدمة', 'Service')} #$tabId';
+      return '${loc.t('common.service')} #$tabId';
     }
   }
 
@@ -164,10 +165,7 @@ class GenericServiceScreen extends StatelessWidget {
         title: Text(_resolveTitle(loc)),
       ),
       body: Center(
-        child: Text(loc.tr(
-          'شاشة رقم $tabId — تُنقل تدريجياً من النسخة Kotlin',
-          'Screen #$tabId — migrate incrementally from Kotlin',
-        ), textAlign: TextAlign.center),
+        child: Text(loc.t('common.migrate_note'), textAlign: TextAlign.center),
       ),
     );
   }

@@ -1,6 +1,7 @@
 // Clean Architecture: Safety — Presentation.
 // Covers: SiteSafetyScreen, SafetyQrPassportScreen, QrCodeScannerScreen,
 // SiteProgressCameraScreen.
+// Titles/notes resolve from JSON keys — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -14,13 +15,13 @@ class SafetyFullScreen extends StatelessWidget {
     final loc = context.watch<AppLocalization>();
     final repo = context.watch<SafetyRepository>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr('السلامة HSE', 'HSE Safety'))),
+      appBar: AppBar(title: Text(loc.t('safe.hse'))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(child: ListTile(
             leading: const Icon(Icons.air),
-            title: Text('${loc.tr('الرياح', 'Wind')}: ${repo.wind.windSpeedMs} m/s'),
+            title: Text('${loc.t('safe.wind')}: ${repo.wind.windSpeedMs} m/s'),
             subtitle: Text(loc.tr(repo.wind.adviceAr, repo.wind.adviceEn)),
           )),
           ...repo.passports.map((p) => ListTile(
@@ -40,7 +41,7 @@ class QrPassportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr('جواز السلامة QR', 'Safety QR Passport'))),
+      appBar: AppBar(title: Text(loc.t('safe.qr_passport'))),
       body: Center(child: QrImageView(data: payload, size: 220)),
     );
   }
@@ -53,10 +54,8 @@ class QrScannerFullScreen extends StatelessWidget {
     final loc = context.watch<AppLocalization>();
     // Port of QrCodeScannerScreen: use mobile_scanner MobileScanner widget here.
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr('ماسح QR', 'QR Scanner'))),
-      body: Center(child: Text(loc.tr(
-        'اربط mobile_scanner هنا لاستلام المواد',
-        'Wire mobile_scanner here for goods receiving'))),
+      appBar: AppBar(title: Text(loc.t('safe.qr_scanner'))),
+      body: Center(child: Text(loc.t('safe.scanner_note'))),
     );
   }
 }
@@ -67,10 +66,8 @@ class ProgressCameraScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr('كاميرا تقدم الموقع', 'Site Camera'))),
-      body: Center(child: Text(loc.tr(
-        'التقاط CameraX → هنا image_picker/camera',
-        'CameraX capture → use camera/image_picker here'))),
+      appBar: AppBar(title: Text(loc.t('safe.camera_title'))),
+      body: Center(child: Text(loc.t('safe.camera_note'))),
     );
   }
 }

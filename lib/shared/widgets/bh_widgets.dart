@@ -3,8 +3,11 @@
 // TowerCraneWindWidget, ProjectFinanceSummaryCard, ProjectProgressLineChart,
 // DailySiteLogCard, BudgetBurnRateDashboard, SafetyQrCodeView,
 // MaterialProcurementView, ProcurementRequestDialog, ActiveVoiceRecordingSection.
+// All chrome text resolves from JSON — callers pass data, widgets pass keys.
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:buildhub/core/localization/app_localization.dart';
 
 class StatusCard extends StatelessWidget {
   final String title;
@@ -31,9 +34,12 @@ class OfflineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!isOffline) return const SizedBox.shrink();
+    final loc = context.watch<AppLocalization>();
     return MaterialBanner(
-      content: const Text('Offline — showing cached Room data'),
-      actions: [TextButton(onPressed: onTap, child: const Text('Details'))],
+      content: Text(loc.t('widgets.offline_cached')),
+      actions: [
+        TextButton(onPressed: onTap, child: Text(loc.t('common.details')))
+      ],
     );
   }
 }
@@ -43,14 +49,19 @@ class CraneWindWidget extends StatelessWidget {
   final bool allowed;
   const CraneWindWidget({super.key, required this.windMs, required this.allowed});
   @override
-  Widget build(BuildContext context) => Card(
-    child: ListTile(
-      leading: Icon(Icons.air,
-        color: allowed ? Colors.green : Colors.red),
-      title: Text('$windMs m/s'),
-      subtitle: Text(allowed ? 'Crane operation allowed' : 'STOP crane ops'),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final loc = context.watch<AppLocalization>();
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.air,
+          color: allowed ? Colors.green : Colors.red),
+        title: Text('$windMs m/s'),
+        subtitle: Text(allowed
+            ? loc.t('widgets.crane_allowed')
+            : loc.t('widgets.crane_stop')),
+      ),
+    );
+  }
 }
 
 class FinanceSummaryCard extends StatelessWidget {

@@ -2,6 +2,7 @@
 // Covers buildnet/: BuildNetHubView, BuildNetProfessionalNetworkView,
 // BuildNetProfileView, BuildNetRecruitmentView, B2BMarketplaceView,
 // InteractiveFeedCards, LinkedInHubView, BuildNetModels.
+// Titles resolve from JSON keys — no hardcoded text.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
@@ -14,9 +15,9 @@ class BuildNetHubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = context.watch<AppLocalization>();
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tr('شبكة BuildNet', 'BuildNet'))),
+      appBar: AppBar(title: Text(loc.t('bn.hub'))),
       body: posts.isEmpty
-        ? Center(child: Text(loc.tr('لا منشورات بعد', 'No posts yet')))
+        ? Center(child: Text(loc.t('bn.no_posts')))
         : ListView(children: posts.map((p) => Card(
           child: ListTile(
             title: Text(loc.tr(p.bodyAr, p.bodyEn)),
@@ -34,7 +35,7 @@ class BuildNetRecruitmentView extends StatelessWidget {
     final loc = context.watch<AppLocalization>();
     return Card(child: ListTile(
       leading: const Icon(Icons.work),
-      title: Text(loc.tr('التوظيف', 'Recruitment')),
+      title: Text(loc.t('bn.recruitment')),
     ));
   }
 }
@@ -46,7 +47,7 @@ class B2BMarketplaceView extends StatelessWidget {
     final loc = context.watch<AppLocalization>();
     return Card(child: ListTile(
       leading: const Icon(Icons.business),
-      title: Text(loc.tr('سوق B2B', 'B2B Marketplace')),
+      title: Text(loc.t('bn.b2b')),
     ));
   }
 }
