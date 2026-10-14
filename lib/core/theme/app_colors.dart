@@ -10,6 +10,7 @@ class AppColors {
   static const darkBorder = Color(0xFF334155);
 
   // Cyan & High-Tech Accents
+  static const primary = Color(0xFF0284C7);
   static const accentCyan = Color(0xFF00E5FF);
   static const accentCyanDark = Color(0xFF00B4D8);
   static const accentSky = Color(0xFF38BDF8);

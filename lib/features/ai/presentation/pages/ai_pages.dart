@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
+import 'package:buildhub/core/theme/app_colors.dart';
 import 'package:buildhub/features/ai/data/datasources/gemini_service.dart';
 import 'package:buildhub/features/documents/domain/entities/document_entities.dart';
 import 'package:buildhub/features/sitepulse/data/services/orion_service.dart';
@@ -121,28 +122,352 @@ class _VoiceTabState extends State<_VoiceTab> {
 
 class AiLegalScreen extends StatelessWidget {
   const AiLegalScreen({super.key});
+
   @override
-  Widget build(BuildContext context) => const _AiShell(
-    titleKey: 'ai.legal', hintKey: 'ai.hint_legal',
-  );
+  Widget build(BuildContext context) {
+    final clauses = [
+      {'clause': 'Sub-Clause 20.1 [Contractor\'s Claims]', 'title': '28-Day Strict Notice Bar', 'desc': 'Contractor must give notice within 28 days of becoming aware of the event, otherwise Employer is discharged from all liability.'},
+      {'clause': 'Sub-Clause 8.4 [Extension of Time for Completion]', 'title': 'EOT Grounds', 'desc': 'Entitled to EOT for: (a) Variations, (b) Exceptionally adverse climatic conditions, (c) Unforeseeable physical conditions, (d) Delays caused by Authorities.'},
+      {'clause': 'Sub-Clause 13.1 [Right to Vary]', 'title': 'Engineer Variation Orders', 'desc': 'Variations may be initiated by the Engineer at any time prior to issuing the Taking-Over Certificate.'},
+      {'clause': 'Sub-Clause 14.3 [Application for Interim Payment]', 'title': 'Monthly IPC Submissions', 'desc': 'Detailed statement showing amounts entitled together with supporting documents and retention deduction.'},
+    ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('FIDIC Contract AI Legal Copilot')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(color: AppColors.accentCyan.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.accentCyan)),
+            child: const Row(
+              children: [
+                Icon(Icons.gavel, color: AppColors.accentCyan),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text('Grounded in FIDIC Red Book (1999/2017) & UAE Civil Transactions Law (Federal Law No. 5 of 1985).', style: TextStyle(fontSize: 11)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('Pre-Loaded Contract Clauses & Precedents', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+          const SizedBox(height: 10),
+          ...clauses.map((c) => Card(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(c['clause']!, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.accentCyan, fontSize: 13)),
+                      const SizedBox(height: 4),
+                      Text(c['title']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                      const SizedBox(height: 6),
+                      Text(c['desc']!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    ],
+                  ),
+                ),
+              )),
+          const SizedBox(height: 8),
+          const Text('Ask Custom FIDIC Dispute Question:', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          const _AiShellContent(titleKey: 'ai.legal', hintKey: 'ai.hint_legal'),
+        ],
+      ),
+    );
+  }
 }
 
 class AiSuperintendentScreen extends StatelessWidget {
   const AiSuperintendentScreen({super.key});
-  @override
-  Widget build(BuildContext context) => const _AiShell(
-    titleKey: 'ai.super', hintKey: 'ai.hint_super',
-  );
-}
 
-class SiteTalkFullScreen extends StatelessWidget {
-  const SiteTalkFullScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final loc = context.watch<AppLocalization>();
+    final priorities = [
+      {'priority': 'Priority 1 (Critical)', 'title': 'Inspect Level 12 Zone B Rebar with Consultant Eng. Tariq at 10:30 AM', 'status': 'HIGH'},
+      {'priority': 'Priority 2 (Logistics)', 'title': 'Unload 35T Rebar delivery at Gate 2 before midday ban begins at 12:30 PM', 'status': 'HIGH'},
+      {'priority': 'Priority 3 (Quality)', 'title': 'Verify slump test calibration for Unibeton transit mixers #03 & #04', 'status': 'MEDIUM'},
+      {'priority': 'Priority 4 (Coordination)', 'title': 'Coordinate MEP clash meeting at axis F4 with Drake & Scull project engineer', 'status': 'MEDIUM'},
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: Text(loc.t('ai.sitetalk'))),
-      body: Center(child: Text(loc.t('ai.sitetalk_body'))),
+      appBar: AppBar(title: const Text('AI Site Superintendent Priorities')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(color: AppColors.verifiedGreen.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.verifiedGreen)),
+            child: const Row(
+              children: [
+                Icon(Icons.smart_toy, color: AppColors.verifiedGreen),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text('Morning Superintendent Synthesis: Analyzed 14 walkie-talkie logs, today\'s weather forecast, and CPM schedule.', style: TextStyle(fontSize: 11)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('Today\'s Key Field Directives', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+          const SizedBox(height: 10),
+          ...priorities.map((p) => Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: ListTile(
+                  leading: const Icon(Icons.check_circle_outline, color: AppColors.accentCyan),
+                  title: Text(p['title']!, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                  subtitle: Text(p['priority']!),
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: p['status'] == 'HIGH' ? AppColors.criticalRed.withValues(alpha: 0.15) : AppColors.cautionAmber.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(p['status']!, style: TextStyle(color: p['status'] == 'HIGH' ? AppColors.criticalRed : AppColors.cautionAmber, fontSize: 10, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+class SiteTalkFullScreen extends StatefulWidget {
+  const SiteTalkFullScreen({super.key});
+
+  @override
+  State<SiteTalkFullScreen> createState() => _SiteTalkFullScreenState();
+}
+
+class _SiteTalkFullScreenState extends State<SiteTalkFullScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  String _activeChannel = 'all_site';
+  bool _isTransmitting = false;
+
+  final List<Map<String, dynamic>> _channels = [
+    {'id': 'all_site', 'name': 'All Site (عام الموقع)', 'last': 'AI: Sandstorm warning for Jan 23-24', 'members': 248, 'unread': 3},
+    {'id': 'structural', 'name': 'Structural Team (الهيكل الإنشائي)', 'last': 'Ahmed: Level 12 rebar complete', 'members': 86, 'unread': 1},
+    {'id': 'mep', 'name': 'MEP Coordination (الكهروميكانيك)', 'last': 'Rajiv: clash at grid F4, need meeting', 'members': 48, 'unread': 5},
+    {'id': 'hse', 'name': 'HSE & Safety Guard (السلامة والبيئة)', 'last': 'Midday ban siren active 12:30 PM', 'members': 34, 'unread': 0},
+  ];
+
+  final List<Map<String, String>> _voiceLogs = [
+    {'sender': 'Eng. Abdelfattah', 'role': 'Project Director', 'time': '10:45 AM', 'duration': '0:24', 'text': 'Approved casting for Level 12 Zone B post consultant inspection.'},
+    {'sender': 'Rajiv Kumar', 'role': 'MEP Foreman', 'time': '10:12 AM', 'duration': '0:18', 'text': 'Chilled water pipe conflict at axis F4 escalated via RFI-088.'},
+    {'sender': 'Ali Hassan', 'role': 'Safety Officer', 'time': '09:30 AM', 'duration': '0:35', 'text': 'Heat index 41.2C, hydration breaks enforced for rebar fixers.'},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('SiteTalk Walkie-Talkie (PTT)', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+            Text('Digital Push-to-Talk • Channels & AI Voice Logs', style: TextStyle(fontSize: 11, color: Colors.grey)),
+          ],
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: AppColors.accentCyan,
+          tabs: const [
+            Tab(text: 'Radio Channels'),
+            Tab(text: 'Voice Logs & Transcripts'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // Channels tab
+          ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              ..._channels.map((ch) {
+                final isSelected = _activeChannel == ch['id'];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: isSelected ? AppColors.accentCyan : Colors.transparent, width: 1.5),
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: isSelected ? AppColors.accentCyan : Colors.white10,
+                      child: Icon(Icons.radio, color: isSelected ? Colors.black : AppColors.accentCyan, size: 20),
+                    ),
+                    title: Text(ch['name'] as String, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    subtitle: Text('${ch['last']} • ${ch['members']} Active'),
+                    trailing: isSelected
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(color: AppColors.verifiedGreen.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(6)),
+                            child: const Text('TUNED IN', style: TextStyle(color: AppColors.verifiedGreen, fontWeight: FontWeight.bold, fontSize: 10)),
+                          )
+                        : null,
+                    onTap: () => setState(() => _activeChannel = ch['id'] as String),
+                  ),
+                );
+              }),
+              const SizedBox(height: 24),
+              // Push to Talk Button
+              Center(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTapDown: (_) => setState(() => _isTransmitting = true),
+                      onTapUp: (_) => setState(() => _isTransmitting = false),
+                      onTapCancel: () => setState(() => _isTransmitting = false),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          color: _isTransmitting ? AppColors.criticalRed : AppColors.accentCyan,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: (_isTransmitting ? AppColors.criticalRed : AppColors.accentCyan).withValues(alpha: 0.5),
+                              blurRadius: _isTransmitting ? 24 : 10,
+                              spreadRadius: _isTransmitting ? 6 : 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          _isTransmitting ? Icons.mic : Icons.mic_none,
+                          size: 48,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _isTransmitting ? 'TRANSMITTING ON CHANNEL...' : 'HOLD TO TALK (PUSH-TO-TALK)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        letterSpacing: 1.2,
+                        color: _isTransmitting ? AppColors.criticalRed : Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // Voice logs tab
+          ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              ..._voiceLogs.map((log) => Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${log['sender']} (${log['role']})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.accentCyan)),
+                              Text('${log['time']} • ${log['duration']}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text('"${log['text']}"', style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(icon: const Icon(Icons.play_circle, color: AppColors.accentCyan), onPressed: () {}),
+                              const Text('Play Audio', style: TextStyle(fontSize: 11, color: AppColors.accentCyan)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AiShellContent extends StatefulWidget {
+  final String titleKey;
+  final String hintKey;
+  const _AiShellContent({required this.titleKey, required this.hintKey});
+  @override
+  State<_AiShellContent> createState() => _AiShellContentState();
+}
+
+class _AiShellContentState extends State<_AiShellContent> {
+  final ctrl = TextEditingController();
+  String answer = '';
+  bool busy = false;
+
+  Future<void> ask() async {
+    setState(() => busy = true);
+    try {
+      final svc = GeminiService();
+      final res = await svc.askSite(ctrl.text);
+      if (!mounted) return;
+      setState(() => answer = res);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => answer = 'Error: $e');
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: ctrl,
+          decoration: InputDecoration(
+            hintText: 'Enter specific contract clause question or query...',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          minLines: 2,
+          maxLines: 4,
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentCyan, foregroundColor: Colors.black),
+          icon: busy ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black)) : const Icon(Icons.send, size: 16),
+          onPressed: busy ? null : ask,
+          label: Text(busy ? 'Analyzing Contract...' : 'Consult Legal AI'),
+        ),
+        if (answer.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(8)),
+            child: Text(answer),
+          ),
+        ],
+      ],
     );
   }
 }
