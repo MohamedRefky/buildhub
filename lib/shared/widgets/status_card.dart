@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buildhub/core/localization/app_localization.dart';
+import 'package:buildhub/core/theme/app_colors.dart';
 
 enum HealthIndicatorType { overallProgress, todaysProgress, openBlockers, overdueActions }
 
@@ -129,36 +130,65 @@ class StatusCard extends StatelessWidget {
 enum BhStatusType { verified, caution, critical, info, neutral }
 
 Color _bhColor(BhStatusType s) => switch (s) {
-      BhStatusType.verified => Colors.green,
-      BhStatusType.caution => Colors.amber,
-      BhStatusType.critical => Colors.red,
-      BhStatusType.info => Colors.cyan,
-      BhStatusType.neutral => Colors.grey,
+      BhStatusType.verified => AppColors.verifiedGreen,
+      BhStatusType.caution => AppColors.cautionAmber,
+      BhStatusType.critical => AppColors.criticalRed,
+      BhStatusType.info => AppColors.accentCyan,
+      BhStatusType.neutral => AppColors.textSecondaryDark,
     };
 
-/// Small icon + label chip (BhComponents.kt parity).
+IconData _bhDefaultIcon(BhStatusType s) => switch (s) {
+      BhStatusType.verified => Icons.check_circle,
+      BhStatusType.caution => Icons.warning,
+      BhStatusType.critical => Icons.error,
+      BhStatusType.info => Icons.info,
+      BhStatusType.neutral => Icons.help_outline,
+    };
+
+/// Small icon + label chip matching BhComponents.kt
 class BhStatusChip extends StatelessWidget {
   final String label;
   final BhStatusType status;
-  final IconData icon;
+  final IconData? icon;
+
   const BhStatusChip({
     super.key,
     required this.label,
     this.status = BhStatusType.info,
-    this.icon = Icons.info_outline,
+    this.icon,
   });
+
   @override
   Widget build(BuildContext context) {
     final color = _bhColor(status);
-    return Chip(
-      avatar: Icon(icon, size: 14, color: color),
-      label: Text(label),
-      side: BorderSide(color: color.withValues(alpha: 0.5)),
+    final iconData = icon ?? _bhDefaultIcon(status);
+    return Container(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(iconData, size: 13, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-/// KPI tile card (BhComponents.kt parity).
+/// KPI tile card matching BhComponents.kt BhKpiTile
 class BhKpiTile extends StatelessWidget {
   final String title;
   final String value;
@@ -166,6 +196,7 @@ class BhKpiTile extends StatelessWidget {
   final IconData icon;
   final BhStatusType status;
   final VoidCallback? onTap;
+
   const BhKpiTile({
     super.key,
     required this.title,
@@ -175,29 +206,78 @@ class BhKpiTile extends StatelessWidget {
     this.status = BhStatusType.info,
     this.onTap,
   });
+
   @override
   Widget build(BuildContext context) {
-    final card = Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final iconColor = _bhColor(status);
+    final card = Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.darkCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.darkBorder.withValues(alpha: 0.4)),
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(children: [
-                Icon(icon, color: _bhColor(status)),
-                const SizedBox(width: 6),
-                Expanded(child: Text(title)),
-              ]),
-              const SizedBox(height: 4),
-              Text(value,
-                  style: Theme.of(context).textTheme.titleLarge),
-              if (subValue.isNotEmpty)
-                Text(subValue,
-                    style: Theme.of(context).textTheme.labelSmall),
-            ]),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondaryDark,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: Icon(icon, size: 17, color: iconColor),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimaryDark,
+            ),
+          ),
+          if (subValue.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              subValue,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: iconColor,
+              ),
+            ),
+          ],
+        ],
       ),
     );
+
     if (onTap == null) return card;
-    return InkWell(onTap: onTap, child: card);
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: card,
+    );
   }
 }
+

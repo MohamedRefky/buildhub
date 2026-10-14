@@ -12,7 +12,7 @@ import '../../features/siteops/data/services/offline_sync.dart';
 import '../../shared/widgets/offline_status.dart';
 import '../../features/home/presentation/pages/dashboard_page.dart';
 import '../../features/home/presentation/pages/services_page.dart';
-import '../../features/procurement/presentation/pages/procurement_pages.dart';
+import '../../features/finance/presentation/pages/commercial_hub_screen.dart';
 import '../../features/documents/presentation/pages/document_pages.dart';
 import '../../features/ai/presentation/pages/ai_pages.dart';
 import '../app_router.dart';
@@ -57,6 +57,7 @@ class _AppShellState extends State<AppShell> {
       case 1:
         setState(() => _currentIndex = 1);
         break;
+      case 7:
       case 22:
         setState(() => _currentIndex = 2);
         break;
@@ -98,7 +99,7 @@ class _AppShellState extends State<AppShell> {
               children: [
                 DashboardScreen(onNavigateToTab: _handleNavigation),
                 AllServicesScreen(onSelect: _handleNavigation),
-                const QuotationComparisonScreen(),
+                const CommercialHubScreen(),
                 const VaultScreen(),
                 const AiCopilotFullScreen(),
               ],

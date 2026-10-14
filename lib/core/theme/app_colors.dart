@@ -33,7 +33,10 @@ class AppColors {
   static const sunlightTextPrimary = Color(0xFF0F172A);
   static const sunlightTextSecondary = Color(0xFF475569);
 
-  // Dark text
+  // Text colors
+  static const textPrimary = Color(0xFFF8FAFC);
+  static const textSecondary = Color(0xFF94A3B8);
+  static const textHint = Color(0xFF64748B);
   static const textPrimaryDark = Color(0xFFF8FAFC);
   static const textSecondaryDark = Color(0xFF94A3B8);
   static const textMutedDark = Color(0xFF64748B);

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../core/localization/app_localization.dart';
 import '../features/ai/presentation/pages/ai_pages.dart';
 import '../features/buildnet/presentation/pages/buildnet_pages.dart';
 import '../features/documents/presentation/pages/document_pages.dart';
@@ -28,8 +26,6 @@ class AppRouter {
     int tabId, {
     void Function(int tab)? onNavigate,
   }) {
-    final loc = context.read<AppLocalization>();
-
     switch (tabId) {
       case 0:
         return DashboardScreen(
@@ -46,10 +42,7 @@ class AppRouter {
       case 4:
         return const AiCopilotFullScreen();
       case 5:
-        return Scaffold(
-          appBar: AppBar(title: Text(loc.t('screen.procurement'))),
-          body: const ProcurementScreen(),
-        );
+        return const OrdersProcurementScreen();
       case 6:
         return const SafetyFullScreen();
       case 7:
